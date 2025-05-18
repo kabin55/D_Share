@@ -1,0 +1,7 @@
+react:
+ 	npm create vite@latest
+	cd <react_folder_name>
+  	npm install
+  	npm run dev
+	npm install tailwindcss @tailwindcss/vite
+(reference:https://medium.com/@npguapo/installation-of-tailwind-vite-react-javascript-or-typescript-ec1abdfa56b2 )
