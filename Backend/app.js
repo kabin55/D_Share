@@ -1,10 +1,27 @@
-import dotenv from "dotenv";
-dotenv.config();
-import express from "express";
+import express from 'express'
+import path from 'path'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
-import { connectToDB } from "./config/db.js";
-connectToDB();
+import userRoute from './routes/userRoute.js'
+import messageRoute from './routes/messageRoute.js'
 
-const app = express();
+const app = express()
 
-export default app;
+const __dirname = path.resolve()
+
+app.use(express.static(path.join(__dirname, '/Frontend/dist')))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cors())
+app.use(cookieParser())
+
+app.use('/api/users', userRoute)
+app.use('/api/messages', messageRoute)
+
+// Serve React app in production
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'Frontend', 'dist', 'index.html'))
+// })
+export default app
