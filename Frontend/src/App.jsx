@@ -1,4 +1,5 @@
 import React from 'react'
+import Home from './pages/Home'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
           Learn More
         </button>
+        <Home/>
       </div>
     </div>
   )
