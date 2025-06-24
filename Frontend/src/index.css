@@ -1,1 +1,14 @@
-@import 'tailwindcss';
+/* Optional: Google Fonts Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+html {
+  scroll-behavior: smooth;
+}
+/* global.css or inside your main CSS file */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #121212; /* dark bg */
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

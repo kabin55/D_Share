@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser'
 
 import userRoute from './routes/userRoute.js'
 import messageRoute from './routes/messageRoute.js'
+import uploadRoute from './routes/uploadRoute.js'
+import fileRoutes from './routes/fileRoute.js'
+
 
 const app = express()
 
@@ -19,9 +22,11 @@ app.use(cookieParser())
 
 app.use('/api/users', userRoute)
 app.use('/api/messages', messageRoute)
+app.use("/api", uploadRoute); // Use the upload route
+app.use('/api', fileRoutes);
 
 // Serve React app in production
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'Frontend', 'dist', 'index.html'))
-// })
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Frontend', 'dist', 'index.html'))
+})
 export default app

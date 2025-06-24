@@ -1,21 +1,28 @@
-import React from 'react'
-import Home from './pages/Home'
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import LoginWithMetaMask from './pages/LoginWithMetaMask';
+import UserDashboard from './pages/UserDashboard';
+import AdminDashboard from './pages/AdminDashboard'; 
+import UploadPage from './pages/Upload'
+import DownloadPage from "./pages/Download";
 
-function App() {
+
+const App = () => {
   return (
-    <div>
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Tailwind Card</h2>
-        <p className="text-gray-600 mt-3">
-          This is a simple card layout built with Tailwind CSS.
-        </p>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
-          Learn More
-        </button>
-        <Home/>
-      </div>
-    </div>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginWithMetaMask />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+         <Route path="/upload" element={<UploadPage/>}/>
+                <Route path="/download" element={<DownloadPage />} />
+                <Route path="/download/:id" element={<FileDetailPage />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;

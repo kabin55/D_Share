@@ -1,7 +1,0 @@
-mention library that is being used in frontend
-
-react-toastify -> https://www.npmjs.com/package/react-toastify --> used to display message
-
-Namaste I am Sushan Aryal i am doing the upload and download section of d_share
-My frontend was not running because of one of the module being imported but not install in my system so i install installnpm install 
-npm i @vitejs/plugin-react --save-dev
