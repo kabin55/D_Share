@@ -1,14 +1,17 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 
 const ChatBubble = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
-    { text: "Hello! I'm your DShare assistant. How can I help you today?", sender: 'ai' }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const messagesEndRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
+    {
+      text: "Hello! I'm your DShare assistant. How can I help you today?",
+      sender: 'ai',
+    },
+  ])
+  const [inputValue, setInputValue] = useState('')
+  const messagesEndRef = useRef(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
 
   const styles = {
     chatContainer: {
@@ -141,82 +144,98 @@ const ChatBubble = () => {
       margin: '0 2px',
       animation: 'typingAnimation 1.4s infinite ease-in-out',
     },
-  };
+  }
 
   const toggleChat = () => {
-    setIsOpen(!isOpen);
-    setIsHovered(false);
-  };
+    setIsOpen(!isOpen)
+    setIsHovered(false)
+  }
 
   const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
+    e.preventDefault()
+    if (!inputValue.trim()) return
 
-    const userMessage = { text: inputValue, sender: 'user' };
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsTyping(true);
+    const userMessage = { text: inputValue, sender: 'user' }
+    setMessages((prev) => [...prev, userMessage])
+    setInputValue('')
+    setIsTyping(true)
 
     setTimeout(async () => {
       try {
-        const aiResponse = await simulateAIResponse(inputValue);
-        setMessages(prev => [...prev, { text: aiResponse, sender: 'ai' }]);
+        const aiResponse = await simulateAIResponse(inputValue)
+        setMessages((prev) => [...prev, { text: aiResponse, sender: 'ai' }])
       } catch (error) {
-        setMessages(prev => [...prev, {
-          text: "Sorry, I encountered an error. Please try again.",
-          sender: 'ai'
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: 'Sorry, I encountered an error. Please try again.',
+            sender: 'ai',
+          },
+        ])
       } finally {
-        setIsTyping(false);
+        setIsTyping(false)
       }
-    }, 1000 + Math.random() * 1000);
-  };
+    }, 1000 + Math.random() * 1000)
+  }
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isTyping])
 
   const simulateAIResponse = async (inputRaw) => {
-    const input = inputRaw.toLowerCase();
+    const input = inputRaw.toLowerCase()
 
-    if (input.includes("dshare") || input.includes("what is this platform")) {
-      return "DShare is a decentralized file-sharing platform that uses Blockchain, IPFS, and Smart Contracts to securely upload, scan, store, and retrieve files.";
-    } else if (input.includes("login") || input.includes("metamask")) {
-      return "Users log in securely using MetaMask, ensuring identity verification before accessing features.";
-    } else if (input.includes("upload") || input.includes("file scan")) {
-      return "Uploaded files are scanned using VirusTotal. If clean, they’re stored in IPFS with metadata logged on the blockchain.";
-    } else if (input.includes("ipfs") || input.includes("storage")) {
-      return "IPFS stores files in a decentralized manner. Each file has a CID (Content Identifier) that is stored on-chain.";
-    } else if (input.includes("cid") || input.includes("download")) {
-      return "Files are retrieved using their CIDs from IPFS. Smart contracts validate these identifiers before allowing download.";
-    } else if (input.includes("admin") || input.includes("dashboard")) {
-      return "Admins can monitor users, analyze scanned reports, block users, and see logs. They manage the platform through a dashboard.";
-    } else if (input.includes("normal user") || input.includes("permissions")) {
-      return "Normal users can upload/download files, report abuse, chat, and manage sharing permissions for their files.";
-    } else if (input.includes("smart contract") || input.includes("blockchain")) {
-      return "Smart Contracts in DShare manage file hashes and metadata, ensuring the uploaded content is securely verifiable.";
-    } else if (input.includes("chat") || input.includes("message")) {
-      return "Users can communicate through chat. Abusive content is logged for admin review, while normal messages are kept temporarily.";
-    } else if (input.includes("ai") || input.includes("graph")) {
-      return "DShare's AI module analyzes activity and generates performance and popularity graphs for users and admins.";
-    } else if (input.includes("backend") || input.includes("node")) {
-      return "The backend (Node.js) manages file scanning, database storage, smart contract calls, chat logic, and alerting.";
-    } else if (input.includes("database") || input.includes("mongo")) {
-      return "MongoDB stores alert logs, scanned file data, and chat history. It connects with both frontend and backend services.";
-    } else if (input.includes("virus") || input.includes("malware")) {
-      return "VirusTotal API integration ensures every file is scanned for threats before being accepted into the system.";
+    if (input.includes('dshare') || input.includes('what is this platform')) {
+      return 'DShare is a decentralized file-sharing platform that uses Blockchain, IPFS, and Smart Contracts to securely upload, scan, store, and retrieve files.'
+    } else if (input.includes('login') || input.includes('metamask')) {
+      return 'Users log in securely using MetaMask, ensuring identity verification before accessing features.'
+    } else if (input.includes('upload') || input.includes('file scan')) {
+      return "Uploaded files are scanned using VirusTotal. If clean, they're stored in IPFS with metadata logged on the blockchain."
+    } else if (input.includes('ipfs') || input.includes('storage')) {
+      return 'IPFS stores files in a decentralized manner. Each file has a CID (Content Identifier) that is stored on-chain.'
+    } else if (input.includes('cid') || input.includes('download')) {
+      return 'Files are retrieved using their CIDs from IPFS. Smart contracts validate these identifiers before allowing download.'
+    } else if (input.includes('admin') || input.includes('dashboard')) {
+      return 'Admins can monitor users, analyze scanned reports, block users, and see logs. They manage the platform through a dashboard.'
+    } else if (input.includes('normal user') || input.includes('permissions')) {
+      return 'Normal users can upload/download files, report abuse, chat, and manage sharing permissions for their files.'
+    } else if (
+      input.includes('smart contract') ||
+      input.includes('blockchain')
+    ) {
+      return 'Smart Contracts in DShare manage file hashes and metadata, ensuring the uploaded content is securely verifiable.'
+    } else if (input.includes('chat') || input.includes('message')) {
+      return 'Users can communicate through chat. Abusive content is logged for admin review, while normal messages are kept temporarily.'
+    } else if (input.includes('ai') || input.includes('graph')) {
+      return "DShare's AI module analyzes activity and generates performance and popularity graphs for users and admins."
+    } else if (input.includes('backend') || input.includes('node')) {
+      return 'The backend (Node.js) manages file scanning, database storage, smart contract calls, chat logic, and alerting.'
+    } else if (input.includes('database') || input.includes('mongo')) {
+      return 'MongoDB stores alert logs, scanned file data, and chat history. It connects with both frontend and backend services.'
+    } else if (input.includes('virus') || input.includes('malware')) {
+      return 'VirusTotal API integration ensures every file is scanned for threats before being accepted into the system.'
     } else {
-      return "I'm here to help with DShare. You can ask about file uploads, smart contracts, IPFS, admin roles, or how our AI module works!";
+      return "I'm here to help with DShare. You can ask about file uploads, smart contracts, IPFS, admin roles, or how our AI module works!"
     }
-  };
+  }
 
   return (
     <div style={styles.chatContainer}>
       {isOpen && (
         <div style={styles.chatWindow}>
           <div style={styles.chatHeader}>
-            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>DShare Assistant</h3>
-            <button style={styles.closeBtn} onClick={toggleChat}>×</button>
+            <span>
+              DShare Assistant
+              {/* TODO: Display current user's name here if available */}
+              {/* Example: user && <span style={{ fontWeight: 'normal', fontSize: '14px', marginLeft: 8 }}>(Logged in as {user.name})</span> */}
+            </span>
+            <button
+              style={styles.closeBtn}
+              onClick={toggleChat}
+              aria-label="Close chat window"
+            >
+              ×
+            </button>
           </div>
           <div style={styles.chatMessages}>
             {messages.map((msg, idx) => (
@@ -224,38 +243,40 @@ const ChatBubble = () => {
                 key={idx}
                 style={{
                   ...styles.message,
-                  ...(msg.sender === 'user' ? styles.userMessage : styles.aiMessage)
+                  ...(msg.sender === 'user'
+                    ? styles.userMessage
+                    : styles.aiMessage),
                 }}
+                aria-label={
+                  msg.sender === 'user' ? 'Your message' : 'Assistant message'
+                }
               >
                 {msg.text}
               </div>
             ))}
             {isTyping && (
-              <div style={styles.typingIndicator}>
-                <div style={{ ...styles.typingDot, animationDelay: '0s' }} />
-                <div style={{ ...styles.typingDot, animationDelay: '0.2s' }} />
-                <div style={{ ...styles.typingDot, animationDelay: '0.4s' }} />
+              <div style={styles.typingIndicator} aria-live="polite">
+                <span>Assistant is typing</span>
+                <span style={styles.typingDot}></span>
+                <span style={styles.typingDot}></span>
+                <span style={styles.typingDot}></span>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
-          <form onSubmit={handleSendMessage} style={styles.chatInput}>
+          <form style={styles.chatInput} onSubmit={handleSendMessage}>
             <input
               type="text"
+              style={styles.chatInputField}
+              placeholder="Type your message..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask about DShare..."
-              autoFocus
-              style={styles.chatInputField}
+              aria-label="Type your message"
             />
             <button
               type="submit"
-              style={{
-                ...styles.sendButton,
-                backgroundColor: inputValue.trim() ? '#4285f4' : '#cccccc',
-                cursor: inputValue.trim() ? 'pointer' : 'not-allowed',
-              }}
-              disabled={!inputValue.trim()}
+              style={styles.sendButton}
+              aria-label="Send message"
             >
               Send
             </button>
@@ -267,11 +288,12 @@ const ChatBubble = () => {
         onClick={toggleChat}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
-        {isOpen ? '✕' : '🤖'}
+        💬
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default ChatBubble;
+export default ChatBubble

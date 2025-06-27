@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import FileCard from "../components/FileCard";
+import React, { useState, useEffect } from 'react'
+import Sidebar from '../components/Sidebar'
+import FileCard from '../components/FileCard'
 
 export default function DownloadPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [files, setFiles] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [files, setFiles] = useState([])
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/public-files");
-        const data = await res.json();
-        setFiles(data);
+        const res = await fetch('http://localhost:4000/api/public-files')
+        const data = await res.json()
+        setFiles(data)
       } catch (err) {
-        console.error("Error fetching files:", err);
+        console.error('Error fetching files:', err)
       }
-    };
-    fetchFiles();
-  }, []);
+    }
+    fetchFiles()
+  }, [])
 
   // Filter files based on search term
   const filteredFiles = files.filter((file) =>
     file.filename.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   return (
     <div className="flex bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen font-sans">
@@ -58,5 +58,5 @@ export default function DownloadPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
