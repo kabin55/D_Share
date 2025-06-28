@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: ['male', 'female'],
     },
-    walletAddres: {
+    walletAddress: {
       type: String,
       required: true,
       unique: true,
