@@ -1,24 +1,32 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { FiLogOut, FiBell, FiSettings, FiUpload, FiDownload, FiClock, FiFile } from 'react-icons/fi';
-import Sidebar from '../components/Sidebar';
+import React from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  FiLogOut,
+  FiBell,
+  FiSettings,
+  FiUpload,
+  FiDownload,
+  FiClock,
+  FiFile,
+} from 'react-icons/fi'
+import Sidebar from '../components/Sidebar'
 
 const UserDashboard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { walletAddress } = location.state || {};
-
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { walletAddress } = location.state || {}
+  console.log(walletAddress)
   const handleLogout = () => {
-    navigate('/');
-  };
+    navigate('/')
+  }
 
   const handleNotifications = () => {
-    alert('Notifications clicked!');
-  };
+    alert('Notifications clicked!')
+  }
 
   const handleSettings = () => {
-    alert('Settings clicked!');
-  };
+    alert('Settings clicked!')
+  }
 
   return (
     <div style={styles.container}>
@@ -33,7 +41,9 @@ const UserDashboard = () => {
             />
             <div>
               <h2 style={styles.username}>Welcome Back 👋</h2>
-              <p style={styles.wallet}>Wallet ID: {walletAddress || "Not connected"}</p>
+              <p style={styles.wallet}>
+                Wallet ID: {walletAddress || 'Not connected'}
+              </p>
             </div>
           </div>
           <div style={styles.actions}>
@@ -83,17 +93,20 @@ const UserDashboard = () => {
           {/* Main Content Area */}
           <div style={styles.contentArea}>
             <h3 style={styles.contentTitle}>Your Dashboard</h3>
-            <p style={styles.contentSubtitle}>This is your secure space. Use DShare features like upload, download, and manage files.</p>
-            
+            <p style={styles.contentSubtitle}>
+              This is your secure space. Use DShare features like upload,
+              download, and manage files.
+            </p>
+
             <div style={styles.cardGrid}>
-              <Sidebar/>
+              <Sidebar />
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const styles = {
   container: {
@@ -250,6 +263,6 @@ const styles = {
       transform: 'translateY(-2px)',
     },
   },
-};
+}
 
-export default UserDashboard;
+export default UserDashboard
