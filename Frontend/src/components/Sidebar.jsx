@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [ 
-  { name: "Dashboard", href: "/dashboard" },
+  { name: "Dashboard", href: "/userdashboard" },
   { name: "Upload", href: "/upload" },
   { name: "Download", href: "/download" },
   { name: "Chat", href: "/chat" },
@@ -14,7 +14,6 @@ export default function Sidebar() {
 
   return (
     <aside className="w-56 bg-gray-900 border-r border-gray-700 p-6 flex flex-col space-y-6 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-3">D-Share</h2>
       <nav className="flex flex-col space-y-4">
         {menuItems.map((item) => (
           <Link
