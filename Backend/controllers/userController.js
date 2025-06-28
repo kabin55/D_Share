@@ -18,12 +18,12 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const userData = async (req, res) => {
   try {
-    const { username, gender, walletAddres } = req.body
+    const { username, gender, walletAddress } = req.body
 
-    if (!username || !walletAddres) {
+    if (!username || !walletAddress) {
       console.log(`all field required`)
       return res.status(400).json({
-        error: 'All fields are required: username, walletAddres',
+        error: 'All fields are required: username, walletAddress',
       })
     }
 
@@ -33,7 +33,7 @@ export const userData = async (req, res) => {
     const newUser = new User({
       username,
       gender,
-      walletAddres,
+      walletAddress,
       profilePic: gender === 'male' ? boyProfilePic : girlProfilePic,
     })
 
@@ -44,7 +44,7 @@ export const userData = async (req, res) => {
       res.status(201).json({
         _id: newUser._id,
         username: newUser.username,
-        walletAddress: newUser.walletAddres,
+        walletAddress: newUser.walletAddress,
         profilePic: newUser.profilePic,
       })
     } else {

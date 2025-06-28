@@ -16,7 +16,7 @@ export default function Navbar() {
     <header className="bg-gray-900 text-white rounded-xl shadow-md mb-3 px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <img
-          src={users?.profilePic || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrmvSoqEMvs4E-TIgyfMdztZYEdKav-zok1A&s"}
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrmvSoqEMvs4E-TIgyfMdztZYEdKav-zok1A&s"
           alt="User Avatar"
           className="w-14 h-14 rounded-full"
         />
