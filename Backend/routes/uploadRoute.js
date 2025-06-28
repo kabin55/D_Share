@@ -2,17 +2,22 @@ import express from 'express';
 import multer from 'multer';
 import ipfs from '../utils/ipfs.js';
 import File from '../models/fileModel.js';
+import dotenv from 'dotenv';
 
 import axios from 'axios';
 import FormData from 'form-data';
 import stream from 'stream';
 
-
+dotenv.config();
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 const virusTotalApiKey = process.env.VIRUSTOTAL_API_KEY;
 const VIRUSTOTAL_URL = process.env.VIRUSTOTAL_URL;
+
+ console.log("💡 VirusTotal URL:", VIRUSTOTAL_URL);
+console.log("💡 API Key exists:", !!virusTotalApiKey);
+
 const ANALYSIS_TIMEOUT = 300000;
 const POLL_INTERVAL = 10000;
 
@@ -24,8 +29,10 @@ function bufferToStream(buffer) {
 
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
+   
     const { originalname, mimetype, size, buffer } = req.file;
-    const { filename, description, privacy, walletAddress } = req.body;
+  const { filename, description, privacy, walletAddress, username } = req.body;
+  console.log("🔐 Username received:", username);
 
     // Step 1: Scan file with VirusTotal
     const form = new FormData();
@@ -95,6 +102,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     // Step 3: Save metadata in MongoDB
     const newFile = await File.create({
       filename,
+      username,
       description,
       privacy,
       walletAddress,
