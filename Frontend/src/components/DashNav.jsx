@@ -6,6 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 export default function Navbar() {
   const navigate = useNavigate();
   const { walletAddress, logout } = useContext(AuthContext); // ⬅️ get logout
+  const username=localStorage.getItem("username");
 
   const handleLogout = () => {
     logout(); // ⬅️ clear context and localStorage
@@ -21,7 +22,7 @@ export default function Navbar() {
           className="w-14 h-14 rounded-full"
         />
         <div>
-          <h2 className="text-lg font-semibold">Welcome Back 👋</h2>
+          <h2 className="text-lg font-semibold">Welcome Back 👋 {username}</h2>
           <p className="text-sm text-gray-400 break-all">
             Wallet ID: {walletAddress || "Not connected"}
           </p>

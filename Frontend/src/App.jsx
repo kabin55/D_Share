@@ -9,11 +9,14 @@ import UploadPage from './pages/Upload';
 import DownloadPage from "./pages/Download";
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';  
+import FileDetailPage from "./pages/FileDetailPage";
+import FloatingBackground from './components/FloatingBackground';
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
+         <FloatingBackground />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginWithMetaMask />} />
@@ -42,6 +45,11 @@ const App = () => {
               <DownloadPage />
             </ProtectedRoute>
           } />
+          <Route path="/file/:id" element={
+            <ProtectedRoute>
+              <FileDetailPage />
+              </ProtectedRoute>
+            } />
         </Routes>
       </Router>
     </AuthProvider>

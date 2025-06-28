@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function FileDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
 
   useEffect(() => {
@@ -40,18 +42,27 @@ export default function FileDetailPage() {
             <p><span className="text-gray-400">Uploaded:</span> {new Date(file.uploadedAt).toLocaleDateString()}</p>
           </div>
 
-          <button
-            className="mt-10 px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"
-            onClick={() => {
-              const a = document.createElement("a");
-              a.href = ipfsLink;
-              a.target = "_blank";
-              a.download = file.filename;
-              a.click();
-            }}
-          >
-            ⬇️ Download File
-          </button>
+          <div className="mt-10 flex gap-4">
+  <button
+    className="px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"
+    onClick={() => {
+      const a = document.createElement("a");
+      a.href = ipfsLink;
+      a.target = "_blank";
+      a.download = file.filename;
+      a.click();
+    }}
+  >
+    ⬇️ Download File
+  </button>
+
+  <button
+    className="px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"
+    onClick={() => navigate("/download")}
+  >
+    🔙 Back
+  </button>
+</div>
         </div>
       </div>
     </div>
