@@ -1,16 +1,17 @@
 // AdminDashboard.js
-import React from 'react';
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useLocation } from 'react-router-dom';
+import DashNav from '../components/DashNav'
 
 const AdminDashboard = () => {
   const location = useLocation();
-  const { walletAddress } = location.state || {};
+  const { walletAddress } = useContext(AuthContext);
 
   return (
     <div>
-      <h1>Admin Dashboard</h1>
-      <p>Connected Wallet: {walletAddress}</p>
-      {/* Your admin dashboard content here */}
+      <DashNav/>
+      
     </div>
   );
 };
