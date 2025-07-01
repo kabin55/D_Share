@@ -11,12 +11,15 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';  
 import FileDetailPage from "./pages/FileDetailPage";
 import FloatingBackground from './components/FloatingBackground';
+import ChatBubble from './ChatBubble'
+
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
          <FloatingBackground />
+         <ChatBubble />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginWithMetaMask />} />
