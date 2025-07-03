@@ -12,7 +12,9 @@ export default function DownloadPage() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/files')
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/files`
+        )
         const data = await res.json()
         setFiles(data)
       } catch (err) {

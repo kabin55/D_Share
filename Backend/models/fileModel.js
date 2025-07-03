@@ -1,43 +1,43 @@
 // models/File.js
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const fileSchema = new mongoose.Schema(
-  {filename:{
-    type:String,
-    required:true
-  },
-username: {
-  type: String,
-  required:true,
-
-},
-walletAddress: {
-  type: String,
-  required: true
-},
+  {
+    filename: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    walletAddress: {
+      type: String,
+      required: true,
+    },
 
     ipfsHash: {
       type: String,
-      required: true
+      required: true,
     },
     size: {
       type: Number,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
-      type: String
+      type: String,
     },
     privacy: {
       type: String,
       enum: ['public', 'private'],
-      default: 'private'
-    }
+      default: 'private',
+    },
   },
   { timestamps: true }
-);
+)
 
-export default mongoose.model('File', fileSchema);
+export default mongoose.model('File', fileSchema)

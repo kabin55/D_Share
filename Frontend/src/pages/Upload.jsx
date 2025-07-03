@@ -1,104 +1,112 @@
-import React, { useState, useRef, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import FloatingBackground from "../components/FloatingBackground";
-import Navbar from "../components/DashNav";
+import React, { useState, useRef, useEffect } from 'react'
+import Sidebar from '../components/Sidebar'
+import FloatingBackground from '../components/FloatingBackground'
+import Navbar from '../components/DashNav'
 
 export default function UploadPage() {
-  const [dragActive, setDragActive] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [privacy, setPrivacy] = useState("public");
-  const [filename, setFilename] = useState("");
-  const [description, setDescription] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isScanning, setIsScanning] = useState(false);
-  const inputRef = useRef(null);
+  const [dragActive, setDragActive] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [privacy, setPrivacy] = useState('public')
+  const [filename, setFilename] = useState('')
+  const [description, setDescription] = useState('')
+  const [uploadedFiles, setUploadedFiles] = useState([])
+  const [isScanning, setIsScanning] = useState(false)
+  const inputRef = useRef(null)
 
   function handleDrag(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(e.type === "dragenter" || e.type === "dragover");
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover')
   }
 
   function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files?.[0]) setSelectedFile(e.dataTransfer.files[0]);
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files?.[0]) setSelectedFile(e.dataTransfer.files[0])
   }
 
   function handleChange(e) {
-    if (e.target.files?.[0]) setSelectedFile(e.target.files[0]);
+    if (e.target.files?.[0]) setSelectedFile(e.target.files[0])
   }
 
   function handleBrowseClick() {
-    inputRef.current.click();
+    inputRef.current.click()
   }
 
   const fetchUploadedFiles = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/files");
-      const data = await res.json();
-      setUploadedFiles(data);
+      const username = JSON.parse(localStorage.getItem('authUser'))?.username
+      if (!username) return
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/files?username=${username}`
+      )
+      const data = await res.json()
+      setUploadedFiles(data)
     } catch (err) {
-      console.error("Error fetching uploaded files", err);
+      console.error('Error fetching uploaded files', err)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUploadedFiles();
-  }, []);
+    fetchUploadedFiles()
+  }, [])
 
-async function handleUpload() {
-  if (!selectedFile || !filename || !description) {
-    alert("Please fill all fields and select a file.");
-    return;
-  }
-
-  const username = localStorage.getItem("username");
-  const walletAddress = localStorage.getItem("walletAddress");
-
-  if (!username || !walletAddress) {
-    alert("Missing user credentials. Please log in again.");
-    return;
-  }
-
-  setIsScanning(true);
-
-  setTimeout(async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("filename", filename);
-      formData.append("description", description);
-      formData.append("privacy", privacy);
-      formData.append("username", username);
-      formData.append("walletAddress", walletAddress);
-
-      const res = await fetch("http://localhost:4000/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert(`Uploaded to IPFS! Hash: ${data.ipfsHash}`);
-        setSelectedFile(null);
-        setFilename("");
-        setDescription("");
-        fetchUploadedFiles();
-      } else {
-        alert(`Upload failed: ${data.message || 'Unknown error'}`);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error uploading file");
-    } finally {
-      setIsScanning(false);
+  async function handleUpload() {
+    if (!selectedFile || !filename || !description) {
+      alert('Please fill all fields and select a file.')
+      return
     }
-  }, 5000);
-}
 
+    const username =
+      JSON.parse(localStorage.getItem('authUser'))?.username || 'User'
+    const walletAddress = localStorage.getItem('walletAddress')
+
+    if (!username || !walletAddress) {
+      alert('Missing user credentials. Please log in again.')
+      return
+    }
+
+    setIsScanning(true)
+
+    setTimeout(async () => {
+      try {
+        const formData = new FormData()
+        formData.append('file', selectedFile)
+        formData.append('filename', filename)
+        formData.append('description', description)
+        formData.append('privacy', privacy)
+        formData.append('username', username)
+        formData.append('walletAddress', walletAddress)
+
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        )
+
+        const data = await res.json()
+
+        if (res.ok) {
+          alert(`Uploaded to IPFS! Hash: ${data.ipfsHash}`)
+          setSelectedFile(null)
+          setFilename('')
+          setDescription('')
+          fetchUploadedFiles()
+        } else {
+          alert(`Upload failed: ${data.message || 'Unknown error'}`)
+        }
+      } catch (err) {
+        console.error(err)
+        alert('Error uploading file')
+      } finally {
+        setIsScanning(false)
+      }
+    }, 5000)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white font-sans">
@@ -139,14 +147,17 @@ async function handleUpload() {
                   className="w-full p-2 bg-[#111] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                   placeholder="Write a short description about the file"
                   rows="2"
-                  style={{ resize: "none" }}
+                  style={{ resize: 'none' }}
                   disabled={isScanning}
                 ></textarea>
               </div>
 
               <div className="flex flex-wrap gap-4 text-xs text-gray-300">
-                {["public", "private", "shared"].map((option) => (
-                  <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                {['public', 'private', 'shared'].map((option) => (
+                  <label
+                    key={option}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name="privacy"
@@ -154,11 +165,11 @@ async function handleUpload() {
                       checked={privacy === option}
                       onChange={() => setPrivacy(option)}
                       className={`form-radio h-3 w-3 ${
-                        option === "public"
-                          ? "text-cyan-500"
-                          : option === "private"
-                          ? "text-pink-500"
-                          : "text-indigo-400"
+                        option === 'public'
+                          ? 'text-cyan-500'
+                          : option === 'private'
+                          ? 'text-pink-500'
+                          : 'text-indigo-400'
                       }`}
                       disabled={isScanning}
                     />
@@ -176,9 +187,9 @@ async function handleUpload() {
                 onClick={handleBrowseClick}
                 className={`w-full h-40 border-4 border-dashed rounded-xl flex flex-col justify-center items-center transition-all duration-300 cursor-pointer relative ${
                   dragActive
-                    ? "border-cyan-500 bg-[#222]/60"
-                    : "border-[#444] bg-[#1a1a1a]/40 hover:border-cyan-500"
-                } ${isScanning ? "cursor-not-allowed opacity-70" : ""}`}
+                    ? 'border-cyan-500 bg-[#222]/60'
+                    : 'border-[#444] bg-[#1a1a1a]/40 hover:border-cyan-500'
+                } ${isScanning ? 'cursor-not-allowed opacity-70' : ''}`}
               >
                 {selectedFile ? (
                   <p className="text-center text-base font-medium animate-pulse truncate max-w-full">
@@ -233,24 +244,32 @@ async function handleUpload() {
               </div>
             </div>
 
-           <div className="w-full lg:w-80 bg-[#1e1e1e]/80 p-6 rounded-2xl shadow-xl border border-[#2b2b2b] backdrop-blur-lg overflow-y-auto">
-              <h2 className="text-xl font-bold mb-4 text-cyan-400">Uploaded Files</h2>
+            <div className="w-full lg:w-80 bg-[#1e1e1e]/80 p-6 rounded-2xl shadow-xl border border-[#2b2b2b] backdrop-blur-lg overflow-y-auto">
+              <h2 className="text-xl font-bold mb-4 text-cyan-400">
+                Uploaded Files
+              </h2>
               {uploadedFiles.length === 0 ? (
                 <p className="text-gray-500 text-sm">No files uploaded yet.</p>
               ) : (
                 <ul className="space-y-4">
                   {uploadedFiles.map((file) => (
-                    <li key={file._id} className="p-3 bg-[#111] rounded-xl border border-[#333] hover:border-cyan-500 transition-all">
-                      <p className="font-semibold truncate text-white">{file.filename}</p>
-                      <p className="text-sm text-gray-400 truncate">{file.description}</p>
-                      <span className="text-xs text-cyan-500 capitalize">{file.privacy}</span>
+                    <li
+                      key={file._id}
+                      className="p-3 bg-[#111] rounded-xl border border-[#333] hover:border-cyan-500 transition-all"
+                    >
+                      <p className="font-semibold truncate text-white">
+                        {file.filename}
+                      </p>
+                      <p className="text-sm text-gray-400 truncate">
+                        {file.description}
+                      </p>
+                      <span className="text-xs text-cyan-500 capitalize">
+                        {file.privacy}
+                      </span>
                     </li>
                   ))}
                 </ul>
               )}
-            
-            
-            
             </div>
           </div>
         </main>
@@ -266,5 +285,5 @@ async function handleUpload() {
         }
       `}</style>
     </div>
-  );
+  )
 }
