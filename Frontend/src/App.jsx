@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext";
 import Home from './pages/Home';
 import LoginWithMetaMask from './pages/LoginWithMetaMask';
-import AdminDashboard from './pages/AdminDashboard'; 
 import UploadPage from './pages/Upload';
 import DownloadPage from "./pages/Download";
 import Dashboard from './pages/Dashboard';
@@ -12,6 +11,14 @@ import ProtectedRoute from './components/ProtectedRoute';
 import FileDetailPage from "./pages/FileDetailPage";
 import FloatingBackground from './components/FloatingBackground';
 import ChatBubble from './ChatBubble'
+
+// Admin section from AdminPages/
+import AdminLayout from './pages/AdminPage/AdminLayout';
+import AdminDashboard from './pages/AdminPage/Dashboard';
+import Files from './pages/AdminPage/Files';
+import Users from './pages/AdminPage/Users';
+import Performance from './pages/AdminPage/Performance';
+import Settings from './pages/AdminPage/Setting';
 
 
 const App = () => {
@@ -37,6 +44,12 @@ const App = () => {
             </ProtectedRoute>
           } />
 
+            {/* <Route path="/chat" element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          } /> */}
+
           <Route path="/upload" element={
             <ProtectedRoute>
               <UploadPage />
@@ -53,6 +66,22 @@ const App = () => {
               <FileDetailPage />
               </ProtectedRoute>
             } />
+          {/* ✅ Admin Layout with Nested Routes (Protected if needed) */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="files" element={<Files />} />
+            <Route path="users" element={<Users />} />
+            <Route path="performance" element={<Performance />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

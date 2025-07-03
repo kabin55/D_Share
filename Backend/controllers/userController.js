@@ -55,3 +55,42 @@ export const userData = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
+
+export const logout = async (req, res) => {
+  res.clearCookie('our_cookie', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+    path: '/',
+  })
+  res.status(200).json({ message: 'Logged out successfully' })
+}
+
+// POST /api/users/check
+export const checkUser = async (req, res) => {
+  const { walletAddress } = req.body
+
+  if (!walletAddress) {
+    return res.status(400).json({ message: 'Wallet address required' })
+  }
+
+  try {
+    const user = await User.findOne({ walletAddress })
+    generateTokenAndSetCookie(user._id, res)
+
+    if (user) {
+      return res.status(200).json({
+        id: user._id,
+        username: user.username,
+        gender: user.gender,
+        walletAddress: user.walletAddress,
+        profilePic: user.profilePic,
+      })
+      console.log('User found:', user)
+    } else {
+      return res.status(404).json({ message: 'User not found' })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' })
+  }
+}
