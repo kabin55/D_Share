@@ -1,5 +1,5 @@
 // src/context/AuthContext.jsx
-import { createContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 export const AuthContext = createContext()
 
@@ -8,14 +8,29 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem('walletAddress') || ''
   )
 
-  const login = (address) => {
+  // Accept address and user data as arguments
+  const login = (address, data) => {
     setWalletAddress(address)
     localStorage.setItem('walletAddress', address)
+    if (data) {
+      localStorage.setItem('authUser', JSON.stringify(data))
+    }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/logout`, {
+        method: 'POST',
+        credentials: 'include', // important to send cookies
+      })
+    } catch (err) {
+      console.error('Logout failed:', err)
+    }
+
     setWalletAddress('')
     localStorage.removeItem('walletAddress')
+    localStorage.removeItem('authUser')
+    localStorage.removeItem('profilePic')
   }
 
   return (
@@ -24,7 +39,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   )
 }
-import { createContext, useContext, useState } from 'react'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () => {
@@ -32,9 +46,19 @@ export const useAuthContext = () => {
 }
 
 export const AuthContextProvider = ({ children }) => {
-  const [authUser, setAuthUser] = useState(
-    JSON.parse(localStorage.getItem('chat-user')) || null
+  const [authUser, setAuthUserState] = useState(
+    JSON.parse(localStorage.getItem('authUser')) || null
   )
+
+  // Helper to set both state and localStorage
+  const setAuthUser = (user) => {
+    setAuthUserState(user)
+    if (user) {
+      localStorage.setItem('authUser', JSON.stringify(user))
+    } else {
+      localStorage.removeItem('authUser')
+    }
+  }
 
   return (
     <AuthContext.Provider value={{ authUser, setAuthUser }}>

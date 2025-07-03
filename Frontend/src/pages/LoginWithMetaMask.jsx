@@ -38,7 +38,7 @@ const LoginWithMetaMask = () => {
       return;
     }
 
-    navigate(isAdmin ? '/admin-dashboard' : '/userdashboard');
+    navigate(isAdmin ? '/admin' : '/userdashboard');
   };
 
   return (
