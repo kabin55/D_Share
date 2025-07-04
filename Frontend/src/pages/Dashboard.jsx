@@ -13,33 +13,30 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false)
   const [message, setMessage] = useState('')
 
-  // 🔍 Check if wallet is already registered
   useEffect(() => {
     const checkUser = async () => {
       if (!walletAddress) return
 
+      const url = `${import.meta.env.VITE_API_BASE_URL}/api/users/check`
+      console.log('checking url:', url)
+
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/users/check`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ walletAddress }),
-          },
-          console.log(
-            'checking url:',
-            `${import.meta.env.VITE_API_BASE_URL}/api/users/check`
-          )
-        )
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ walletAddress }),
+        })
 
         const data = await res.json()
-        console.log('User check response:', data)
+        console.log('User check response (ID):', data.token)
+        console.log('User check response (username):', data.username)
+
         if (res.ok && data?.username) {
           // ✅ Existing user
           setUsername(data.username)
           setGender(data.gender)
-          // Store full user object in localStorage
+
           localStorage.setItem(
             'authUser',
             JSON.stringify({
@@ -48,13 +45,12 @@ export default function Dashboard() {
               gender: data.gender,
               walletAddress: data.walletAddress,
               profilePic: data.profilePic,
+              token: data.token,
             })
           )
-          // Optionally, also store profilePic separately
           localStorage.setItem('profilePic', data.profilePic)
           setShowForm(false)
         } else {
-          // ❌ New user
           setShowForm(true)
         }
       } catch (error) {

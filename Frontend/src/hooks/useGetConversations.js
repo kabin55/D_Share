@@ -8,9 +8,10 @@ const useGetConversations = () => {
   useEffect(() => {
     const getConversations = async () => {
       // Get auth token from localStorage
-      const authUser = JSON.parse(localStorage.getItem('chat-user'))
+      const authUser = JSON.parse(localStorage.getItem('authUser'))
       const token = authUser?.token
-
+      console.log(authUser)
+      console.log(token)
       // Check if user is authenticated
       if (!token) {
         console.log('No authentication token found')
@@ -20,13 +21,16 @@ const useGetConversations = () => {
       setLoading(true)
       try {
         console.log('Fetching conversations from /api/users...')
-        const res = await fetch('http://localhost:4000/api/users', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        })
-        console.log('Response status:', res.status)
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        console.log('Response status:', res)
         const data = await res.json()
         console.log('API Response data:', data)
         if (data.error) {

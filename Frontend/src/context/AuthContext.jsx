@@ -8,12 +8,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem('walletAddress') || ''
   )
 
-  // Accept address and user data as arguments
-  const login = (address, data) => {
+  const [authUser, setAuthUser] = useState(
+    JSON.parse(localStorage.getItem('authUser')) || null
+  )
+
+  const login = (address, userData) => {
     setWalletAddress(address)
     localStorage.setItem('walletAddress', address)
-    if (data) {
-      localStorage.setItem('authUser', JSON.stringify(data))
+
+    if (userData) {
+      setAuthUser(userData)
+      localStorage.setItem('authUser', JSON.stringify(userData))
     }
   }
 
@@ -21,48 +26,25 @@ export const AuthProvider = ({ children }) => {
     try {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/logout`, {
         method: 'POST',
-        credentials: 'include', // important to send cookies
+        credentials: 'include',
       })
     } catch (err) {
       console.error('Logout failed:', err)
     }
 
     setWalletAddress('')
+    setAuthUser(null)
+
     localStorage.removeItem('walletAddress')
     localStorage.removeItem('authUser')
-    localStorage.removeItem('profilePic')
+    localStorage.removeItem('profilePic') // Optional: if you’re storing a separate profile pic
   }
 
   return (
-    <AuthContext.Provider value={{ walletAddress, login, logout }}>
+    <AuthContext.Provider value={{ walletAddress, authUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuthContext = () => {
-  return useContext(AuthContext)
-}
-
-export const AuthContextProvider = ({ children }) => {
-  const [authUser, setAuthUserState] = useState(
-    JSON.parse(localStorage.getItem('authUser')) || null
-  )
-
-  // Helper to set both state and localStorage
-  const setAuthUser = (user) => {
-    setAuthUserState(user)
-    if (user) {
-      localStorage.setItem('authUser', JSON.stringify(user))
-    } else {
-      localStorage.removeItem('authUser')
-    }
-  }
-
-  return (
-    <AuthContext.Provider value={{ authUser, setAuthUser }}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+export const useAuthContext = () => useContext(AuthContext)

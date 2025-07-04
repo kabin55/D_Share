@@ -20,6 +20,8 @@ import Users from './pages/AdminPage/Users'
 import Performance from './pages/AdminPage/Performance'
 import Settings from './pages/AdminPage/Setting'
 
+import Chat from './pages/chat_home/ChatHome'
+
 const App = () => {
   return (
     <AuthProvider>
@@ -49,11 +51,14 @@ const App = () => {
             }
           />
 
-          {/* <Route path="/chat" element={
-            <ProtectedRoute>
-              <Chat />
-            </ProtectedRoute>
-          } /> */}
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/upload"

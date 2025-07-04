@@ -46,6 +46,7 @@ export const userData = async (req, res) => {
         username: newUser.username,
         walletAddress: newUser.walletAddress,
         profilePic: newUser.profilePic,
+        token: generateTokenAndSetCookie(newUser._id, res),
       })
     } else {
       res.status(400).json({ error: 'Invalid user data' })
@@ -76,15 +77,17 @@ export const checkUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ walletAddress })
-    generateTokenAndSetCookie(user._id, res)
+    // generateTokenAndSetCookie(user._id, res)
 
     if (user) {
+      const token = generateTokenAndSetCookie(user._id, res)
       return res.status(200).json({
-        id: user._id,
+        _id: user._id,
         username: user.username,
         gender: user.gender,
         walletAddress: user.walletAddress,
         profilePic: user.profilePic,
+        token,
       })
       console.log('User found:', user)
     } else {

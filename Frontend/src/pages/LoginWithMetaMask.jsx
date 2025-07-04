@@ -1,45 +1,45 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; // ⬅️ import context
+import React, { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext' // ⬅️ import context
 
 const LoginWithMetaMask = () => {
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [error, setError] = useState('');
-  const { walletAddress, login } = useContext(AuthContext); // ⬅️ get wallet and login function
-  const navigate = useNavigate();
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [error, setError] = useState('')
+  const { walletAddress, login } = useContext(AuthContext) // ⬅️ get wallet and login function
+  const navigate = useNavigate()
 
   const connectWallet = async () => {
-    setError('');
-    setIsConnecting(true);
+    setError('')
+    setIsConnecting(true)
 
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
-        });
+        })
 
-        const wallet = accounts[0];
-        login(wallet); // ⬅️ store globally
+        const wallet = accounts[0]
+        login(wallet) // ⬅️ store globally
       } catch (err) {
-        console.error('User rejected request:', err);
-        setError('Connection rejected. Please try again.');
+        console.error('User rejected request:', err)
+        setError('Connection rejected. Please try again.')
       } finally {
-        setIsConnecting(false);
+        setIsConnecting(false)
       }
     } else {
-      setError('MetaMask not detected! Please install MetaMask.');
-      setIsConnecting(false);
+      setError('MetaMask not detected! Please install MetaMask.')
+      setIsConnecting(false)
     }
-  };
+  }
 
   const handleLogin = (isAdmin = false) => {
     if (!walletAddress) {
-      setError('Please connect your MetaMask wallet first.');
-      return;
+      setError('Please connect your MetaMask wallet first.')
+      return
     }
 
-    navigate(isAdmin ? '/admin' : '/userdashboard');
-  };
+    navigate(isAdmin ? '/admin' : '/userdashboard')
+  }
 
   return (
     <div style={styles.container}>
@@ -113,8 +113,8 @@ const LoginWithMetaMask = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const styles = {
   container: {
@@ -124,7 +124,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '20px',
-    backgroundImage: 'url(https://i.gifer.com/origin/46/462c6f5f67c13830cd9fcdbfc7b55ded.gif)',
+    backgroundImage:
+      'url(https://i.gifer.com/origin/46/462c6f5f67c13830cd9fcdbfc7b55ded.gif)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundAttachment: 'fixed',
@@ -261,6 +262,6 @@ const styles = {
     textDecoration: 'none',
     fontWeight: '500',
   },
-};
+}
 
-export default LoginWithMetaMask;
+export default LoginWithMetaMask

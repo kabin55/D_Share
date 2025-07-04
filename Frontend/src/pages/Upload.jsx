@@ -40,7 +40,9 @@ export default function UploadPage() {
       if (!username) return
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/files?username=${username}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/individualFiles?username=${username}`
       )
       const data = await res.json()
       setUploadedFiles(data)
