@@ -1,0 +1,5 @@
+frontend :
+npm install zustand react-hot-toast socket.io-client
+
+# need to change ip in 2 file -
+.env of frontend and backend
