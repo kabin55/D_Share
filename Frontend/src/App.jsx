@@ -1,21 +1,25 @@
-import React from 'react'
-import Home from './pages/Home'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AdminLayout from "./pages/AdminLayout";
+import Dashboard from "./pages/Dashboard";
+import Files from "./pages/Files";
+import Users from "./pages/Users";
+import Performance from "./pages/Performance";
+import Settings from "./pages/setting";
 
 function App() {
   return (
-    <div>
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Tailwind Card</h2>
-        <p className="text-gray-600 mt-3">
-          This is a simple card layout built with Tailwind CSS.
-        </p>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
-          Learn More
-        </button>
-        <Home/>
-      </div>
-    </div>
-  )
+    <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="files" element={<Files />} />
+        <Route path="users" element={<Users />} />
+
+        <Route path="performance" element={<Performance />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;
