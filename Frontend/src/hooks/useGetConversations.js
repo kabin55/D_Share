@@ -10,8 +10,8 @@ const useGetConversations = () => {
       // Get auth token from localStorage
       const authUser = JSON.parse(localStorage.getItem('authUser'))
       const token = authUser?.token
-      console.log(authUser)
-      console.log(token)
+      // console.log(authUser)
+      console.log(`token is usegetconversation ${token}`)
       // Check if user is authenticated
       if (!token) {
         console.log('No authentication token found')

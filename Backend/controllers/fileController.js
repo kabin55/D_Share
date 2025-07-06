@@ -19,10 +19,11 @@ export const getUserFiles = async (req, res) => {
   }
 }
 
-// ✅ This fetches all files (for admin maybe?)
 export const allFiles = async (req, res) => {
   try {
-    const files = await File.find({}).sort({ uploadedAt: -1 })
+    const files = await File.find({ privacy: 'public' }).sort({
+      uploadedAt: -1,
+    })
     res.json(files)
   } catch (err) {
     console.error(err)

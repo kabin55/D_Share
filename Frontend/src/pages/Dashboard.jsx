@@ -99,6 +99,7 @@ export default function Dashboard() {
             gender: data.gender,
             walletAddress: data.walletAddress,
             profilePic: data.profilePic,
+            token: data.token,
           })
         )
         // Optionally, also store profilePic separately
