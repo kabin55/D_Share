@@ -2,19 +2,16 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const navItems = [
-    { name: 'dashboard', icon: '📊', path: '/admin/dashboard' },
-    { name: 'files', icon: '📂', path: '/admin/files' },
-    { name: 'users', icon: '👥', path: '/admin/users' },
-    { name: 'performance', icon: '📈', path: '/admin/performance' },
-    { name: 'settings', icon: '⚙️', path: '/admin/settings' },
+    { name: 'dashboard', path: '/admin/dashboard' },
+    { name: 'files', path: '/admin/files' },
+    { name: 'users',  path: '/admin/users' },
+    { name: 'performance', path: '/admin/performance' },
+    { name: 'settings',  path: '/admin/settings' },
   ];
 
   return (
-    <aside className="w-64 bg-gray-800 p-4 shadow-lg border-r border-gray-700">
-      <div className="flex items-center mb-8 p-2">
-        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
-          D-Share
-        </h2>
+    <aside className="w-56 bg-gray-900 border-r border-gray-700 p-6 flex flex-col space-y-6 min-h-screen">
+      <div className="flex flex-col space-y-4">
       </div>
       <ul className="space-y-2">
         {navItems.map((item) => (

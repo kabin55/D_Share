@@ -2,15 +2,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext";
-import Home from './pages/Home';
+import Home from './pages/HomePage/Home';
 import LoginWithMetaMask from './pages/LoginWithMetaMask';
-import UploadPage from './pages/Upload';
-import DownloadPage from "./pages/Download";
-import Dashboard from './pages/Dashboard';
+import UploadPage from './pages/UserPage/Upload';
+import DownloadPage from "./pages/UserPage/Download";
+import Dashboard from './pages/UserPage/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';  
-import FileDetailPage from "./pages/FileDetailPage";
+import FileDetailPage from "./pages/UserPage/FileDetailPage";
 import FloatingBackground from './components/FloatingBackground';
 import ChatBubble from './ChatBubble'
+import SettingsPage from './pages/UserPage/Settings';
 
 // Admin section from AdminPages/
 import AdminLayout from './pages/AdminPage/AdminLayout';
@@ -49,6 +50,12 @@ const App = () => {
               <Chat />
             </ProtectedRoute>
           } /> */}
+
+           <Route path="/settings" element={
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          } />
 
           <Route path="/upload" element={
             <ProtectedRoute>

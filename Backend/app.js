@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: 'http://192.168.1.78:3000', // your frontend origin here
+    origin: 'http://172.16.0.215:3000', // your frontend origin here
     credentials: true,
   })
 )
