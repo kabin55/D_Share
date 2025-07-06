@@ -8,7 +8,6 @@ import messageRoute from './routes/messageRoute.js'
 import uploadRoute from './routes/uploadRoute.js'
 import fileRoutes from './routes/fileRoute.js'
 
-
 const app = express()
 
 const __dirname = path.resolve()
@@ -17,13 +16,19 @@ app.use(express.static(path.join(__dirname, '/Frontend/dist')))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://172.16.0.215:3000', // your frontend origin here
+    credentials: true,
+  })
+)
+
 app.use(cookieParser())
 
 app.use('/api/users', userRoute)
 app.use('/api/messages', messageRoute)
-app.use("/api", uploadRoute); // Use the upload route
-app.use('/api', fileRoutes);
+app.use('/api', uploadRoute) // Use the upload route
+app.use('/api', fileRoutes)
 
 // Serve React app in production
 app.get('*', (req, res) => {

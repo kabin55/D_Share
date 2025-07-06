@@ -18,12 +18,12 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const userData = async (req, res) => {
   try {
-    const { username, gender, walletAddres } = req.body
+    const { username, gender, walletAddress } = req.body
 
-    if (!username || !walletAddres) {
+    if (!username || !walletAddress) {
       console.log(`all field required`)
       return res.status(400).json({
-        error: 'All fields are required: username, walletAddres',
+        error: 'All fields are required: username, walletAddress',
       })
     }
 
@@ -33,7 +33,7 @@ export const userData = async (req, res) => {
     const newUser = new User({
       username,
       gender,
-      walletAddres,
+      walletAddress,
       profilePic: gender === 'male' ? boyProfilePic : girlProfilePic,
     })
 
@@ -44,7 +44,7 @@ export const userData = async (req, res) => {
       res.status(201).json({
         _id: newUser._id,
         username: newUser.username,
-        walletAddress: newUser.walletAddres,
+        walletAddress: newUser.walletAddress,
         profilePic: newUser.profilePic,
       })
     } else {
@@ -53,5 +53,44 @@ export const userData = async (req, res) => {
   } catch (error) {
     console.log('Error in signup controller', error.message)
     res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
+
+export const logout = async (req, res) => {
+  res.clearCookie('our_cookie', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+    path: '/',
+  })
+  res.status(200).json({ message: 'Logged out successfully' })
+}
+
+// POST /api/users/check
+export const checkUser = async (req, res) => {
+  const { walletAddress } = req.body
+
+  if (!walletAddress) {
+    return res.status(400).json({ message: 'Wallet address required' })
+  }
+
+  try {
+    const user = await User.findOne({ walletAddress })
+    generateTokenAndSetCookie(user._id, res)
+
+    if (user) {
+      return res.status(200).json({
+        id: user._id,
+        username: user.username,
+        gender: user.gender,
+        walletAddress: user.walletAddress,
+        profilePic: user.profilePic,
+      })
+      console.log('User found:', user)
+    } else {
+      return res.status(404).json({ message: 'User not found' })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' })
   }
 }

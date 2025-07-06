@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // ⬅️ import context
 
 const LoginWithMetaMask = () => {
-  const [walletAddress, setWalletAddress] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState('');
+  const { walletAddress, login } = useContext(AuthContext); // ⬅️ get wallet and login function
   const navigate = useNavigate();
 
   const connectWallet = async () => {
@@ -16,7 +17,9 @@ const LoginWithMetaMask = () => {
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         });
-        setWalletAddress(accounts[0]);
+
+        const wallet = accounts[0];
+        login(wallet); // ⬅️ store globally
       } catch (err) {
         console.error('User rejected request:', err);
         setError('Connection rejected. Please try again.');
@@ -34,20 +37,21 @@ const LoginWithMetaMask = () => {
       setError('Please connect your MetaMask wallet first.');
       return;
     }
-    navigate(isAdmin ? '/admin-dashboard' : '/dashboard', {
-      state: { walletAddress }
-    });
+
+    navigate(isAdmin ? '/admin' : '/userdashboard');
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.logoContainer}>
-          <div style={styles.logo}><img
-            src="/src/assets/Metamask.png"
-            alt="Metamask-logo"
-            className="logo-image"
-          /></div>
+          <div style={styles.logo}>
+            <img
+              src="/src/assets/Metamask.png"
+              alt="Metamask-logo"
+              className="logo-image"
+            />
+          </div>
           <h2 style={styles.title}>MetaMask Login</h2>
           <p style={styles.subtitle}>Connect your wallet to continue</p>
         </div>
@@ -63,8 +67,11 @@ const LoginWithMetaMask = () => {
           onClick={connectWallet}
           disabled={isConnecting}
         >
-          {isConnecting ? 'Connecting...' :
-            walletAddress ? '✔ Wallet Connected' : 'Connect MetaMask'}
+          {isConnecting
+            ? 'Connecting...'
+            : walletAddress
+            ? '✔ Wallet Connected'
+            : 'Connect MetaMask'}
         </button>
 
         {walletAddress && (
