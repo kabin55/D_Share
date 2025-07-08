@@ -12,6 +12,7 @@ const generateTokenAndSetCookie = (userId, res) => {
     sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict', // Allow cookies in development
     secure: process.env.NODE_ENV === 'production', // Only secure in production
   })
+  return token
 }
 
 export default generateTokenAndSetCookie

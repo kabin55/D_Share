@@ -94,3 +94,18 @@ export const checkUser = async (req, res) => {
     return res.status(500).json({ message: 'Server error' })
   }
 }
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const excludeId = req.query.exclude
+    // console.log(excludeId)
+    const users = await User.find({ _id: { $ne: excludeId } }).select(
+      '-password'
+    )
+    // console.log(users)
+    res.status(200).json(users)
+  } catch (error) {
+    console.error('Error fetching users:', error)
+    res.status(500).json({ message: 'Server error', error: error.message })
+  }
+}
