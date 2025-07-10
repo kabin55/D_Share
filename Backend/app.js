@@ -27,7 +27,7 @@ app.use(cookieParser())
 
 app.use('/api/users', userRoute)
 app.use('/api/messages', messageRoute)
-app.use('/api', uploadRoute) // Use the upload route
+app.use('/api', uploadRoute) 
 app.use('/api', fileRoutes)
 
 // Serve React app in production

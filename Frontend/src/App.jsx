@@ -12,7 +12,7 @@ import FileDetailPage from './pages/UserPage/FileDetailPage'
 import FloatingBackground from './components/FloatingBackground'
 import ChatBubble from './ChatBubble'
 import Chat from './pages/ChatLayout'
-// import SettingsPage from './pages/UserPage/Settings'
+import SettingsPage from './pages/UserPage/Settings'
 
 // Admin section from AdminPages/
 import AdminLayout from './pages/AdminPage/AdminLayout'
@@ -20,7 +20,7 @@ import AdminDashboard from './pages/AdminPage/Dashboard'
 import Files from './pages/AdminPage/Files'
 import Users from './pages/AdminPage/Users'
 import Performance from './pages/AdminPage/Performance'
-// import Settings from './pages/AdminPage/Setting';
+import Settings from './pages/AdminPage/setting'
 
 const App = () => {
   return (
@@ -60,14 +60,14 @@ const App = () => {
             }
           />
 
-          {/* <Route
+          <Route
             path="/settings"
             element={
               <ProtectedRoute>
                 <SettingsPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
 
           <Route
             path="/upload"
@@ -108,7 +108,7 @@ const App = () => {
             <Route path="files" element={<Files />} />
             <Route path="users" element={<Users />} />
             <Route path="performance" element={<Performance />} />
-            {/* <Route path="settings" element={<Settings />} /> */}
+            <Route path="settings" element={<Settings />} /> 
           </Route>
         </Routes>
       </Router>
