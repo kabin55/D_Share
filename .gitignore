@@ -1,4 +1,74 @@
-node_modules/*
-Frontend/node_modules/*
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv
 .env
-node_modules
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directories
+coverage/
+.nyc_output/
+
+# Vite build output
+dist/
+.vite/
+
+# VS Code settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# MongoDB local database files
+/data/db/
+*.mongodb
+
+# Optional: local uploads
+uploads/
+public/uploads/
+
+# IntelliJ / JetBrains
+.idea/
+
+# Test reports
+test-output/
+test-results/
+
+# Optional: Ignore build for React in client dir
+client/build/
+client/dist/
+client/node_modules/
+
+# Optional: Ignore backend build
+server/build/
+server/dist/
+server/node_modules/
+
+# Local database export/import files
+dump/
+
+# Optional: log files
+*.log
+debug.log

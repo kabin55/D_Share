@@ -1,207 +1,207 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 
 const DEFAULTS = {
-  systemName: "D-Share",
-  storageLimit: "50 GB",
-  fileRetention: "90 days",
+  systemName: 'D-Share',
+  storageLimit: '50 GB',
+  fileRetention: '90 days',
   require2FA: false,
-  passwordComplexity: "Medium",
-  sessionTimeout: "1 hour",
+  passwordComplexity: 'Medium',
+  sessionTimeout: '1 hour',
   emailAlerts: true,
   systemNotifications: true,
   autoDeactivateUsers: false,
   maxLoginAttempts: 5,
   darkMode: false,
   apiAccessEnabled: true,
-};
+}
 
 const Settings = () => {
   // State with localStorage init
   const [systemName, setSystemName] = useState(
-    () => localStorage.getItem("systemName") || DEFAULTS.systemName
-  );
+    () => localStorage.getItem('systemName') || DEFAULTS.systemName
+  )
   const [storageLimit, setStorageLimit] = useState(
-    () => localStorage.getItem("storageLimit") || DEFAULTS.storageLimit
-  );
+    () => localStorage.getItem('storageLimit') || DEFAULTS.storageLimit
+  )
   const [fileRetention, setFileRetention] = useState(
-    () => localStorage.getItem("fileRetention") || DEFAULTS.fileRetention
-  );
+    () => localStorage.getItem('fileRetention') || DEFAULTS.fileRetention
+  )
   const [require2FA, setRequire2FA] = useState(
-    () => JSON.parse(localStorage.getItem("require2FA")) ?? DEFAULTS.require2FA
-  );
+    () => JSON.parse(localStorage.getItem('require2FA')) ?? DEFAULTS.require2FA
+  )
   const [passwordComplexity, setPasswordComplexity] = useState(
     () =>
-      localStorage.getItem("passwordComplexity") || DEFAULTS.passwordComplexity
-  );
+      localStorage.getItem('passwordComplexity') || DEFAULTS.passwordComplexity
+  )
   const [sessionTimeout, setSessionTimeout] = useState(
-    () => localStorage.getItem("sessionTimeout") || DEFAULTS.sessionTimeout
-  );
+    () => localStorage.getItem('sessionTimeout') || DEFAULTS.sessionTimeout
+  )
 
   // New settings state
   const [emailAlerts, setEmailAlerts] = useState(
     () =>
-      JSON.parse(localStorage.getItem("emailAlerts")) ?? DEFAULTS.emailAlerts
-  );
+      JSON.parse(localStorage.getItem('emailAlerts')) ?? DEFAULTS.emailAlerts
+  )
   const [systemNotifications, setSystemNotifications] = useState(
     () =>
-      JSON.parse(localStorage.getItem("systemNotifications")) ??
+      JSON.parse(localStorage.getItem('systemNotifications')) ??
       DEFAULTS.systemNotifications
-  );
+  )
   const [autoDeactivateUsers, setAutoDeactivateUsers] = useState(
     () =>
-      JSON.parse(localStorage.getItem("autoDeactivateUsers")) ??
+      JSON.parse(localStorage.getItem('autoDeactivateUsers')) ??
       DEFAULTS.autoDeactivateUsers
-  );
+  )
   const [maxLoginAttempts, setMaxLoginAttempts] = useState(
     () =>
-      parseInt(localStorage.getItem("maxLoginAttempts")) ||
+      parseInt(localStorage.getItem('maxLoginAttempts')) ||
       DEFAULTS.maxLoginAttempts
-  );
+  )
   const [darkMode, setDarkMode] = useState(
-    () => JSON.parse(localStorage.getItem("darkMode")) ?? DEFAULTS.darkMode
-  );
+    () => JSON.parse(localStorage.getItem('darkMode')) ?? DEFAULTS.darkMode
+  )
   const [apiAccessEnabled, setApiAccessEnabled] = useState(
     () =>
-      JSON.parse(localStorage.getItem("apiAccessEnabled")) ??
+      JSON.parse(localStorage.getItem('apiAccessEnabled')) ??
       DEFAULTS.apiAccessEnabled
-  );
+  )
 
   // Save to localStorage
-  useEffect(() => localStorage.setItem("systemName", systemName), [systemName]);
+  useEffect(() => localStorage.setItem('systemName', systemName), [systemName])
   useEffect(
-    () => localStorage.setItem("storageLimit", storageLimit),
+    () => localStorage.setItem('storageLimit', storageLimit),
     [storageLimit]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("fileRetention", fileRetention),
+    () => localStorage.setItem('fileRetention', fileRetention),
     [fileRetention]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("require2FA", JSON.stringify(require2FA)),
+    () => localStorage.setItem('require2FA', JSON.stringify(require2FA)),
     [require2FA]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("passwordComplexity", passwordComplexity),
+    () => localStorage.setItem('passwordComplexity', passwordComplexity),
     [passwordComplexity]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("sessionTimeout", sessionTimeout),
+    () => localStorage.setItem('sessionTimeout', sessionTimeout),
     [sessionTimeout]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("emailAlerts", JSON.stringify(emailAlerts)),
+    () => localStorage.setItem('emailAlerts', JSON.stringify(emailAlerts)),
     [emailAlerts]
-  );
+  )
   useEffect(
     () =>
       localStorage.setItem(
-        "systemNotifications",
+        'systemNotifications',
         JSON.stringify(systemNotifications)
       ),
     [systemNotifications]
-  );
+  )
   useEffect(
     () =>
       localStorage.setItem(
-        "autoDeactivateUsers",
+        'autoDeactivateUsers',
         JSON.stringify(autoDeactivateUsers)
       ),
     [autoDeactivateUsers]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("maxLoginAttempts", maxLoginAttempts.toString()),
+    () => localStorage.setItem('maxLoginAttempts', maxLoginAttempts.toString()),
     [maxLoginAttempts]
-  );
+  )
   useEffect(
-    () => localStorage.setItem("darkMode", JSON.stringify(darkMode)),
+    () => localStorage.setItem('darkMode', JSON.stringify(darkMode)),
     [darkMode]
-  );
+  )
   useEffect(
     () =>
       localStorage.setItem(
-        "apiAccessEnabled",
+        'apiAccessEnabled',
         JSON.stringify(apiAccessEnabled)
       ),
     [apiAccessEnabled]
-  );
+  )
 
   // Sync changes across tabs
   useEffect(() => {
     function onStorageChange(e) {
       switch (e.key) {
-        case "systemName":
+        case 'systemName':
           if (e.newValue !== systemName)
-            setSystemName(e.newValue || DEFAULTS.systemName);
-          break;
-        case "storageLimit":
+            setSystemName(e.newValue || DEFAULTS.systemName)
+          break
+        case 'storageLimit':
           if (e.newValue !== storageLimit)
-            setStorageLimit(e.newValue || DEFAULTS.storageLimit);
-          break;
-        case "fileRetention":
+            setStorageLimit(e.newValue || DEFAULTS.storageLimit)
+          break
+        case 'fileRetention':
           if (e.newValue !== fileRetention)
-            setFileRetention(e.newValue || DEFAULTS.fileRetention);
-          break;
-        case "require2FA": {
+            setFileRetention(e.newValue || DEFAULTS.fileRetention)
+          break
+        case 'require2FA': {
           const val =
-            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.require2FA;
-          if (val !== require2FA) setRequire2FA(val);
-          break;
+            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.require2FA
+          if (val !== require2FA) setRequire2FA(val)
+          break
         }
-        case "passwordComplexity":
+        case 'passwordComplexity':
           if (e.newValue !== passwordComplexity)
-            setPasswordComplexity(e.newValue || DEFAULTS.passwordComplexity);
-          break;
-        case "sessionTimeout":
+            setPasswordComplexity(e.newValue || DEFAULTS.passwordComplexity)
+          break
+        case 'sessionTimeout':
           if (e.newValue !== sessionTimeout)
-            setSessionTimeout(e.newValue || DEFAULTS.sessionTimeout);
-          break;
-        case "emailAlerts": {
+            setSessionTimeout(e.newValue || DEFAULTS.sessionTimeout)
+          break
+        case 'emailAlerts': {
           const val =
-            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.emailAlerts;
-          if (val !== emailAlerts) setEmailAlerts(val);
-          break;
+            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.emailAlerts
+          if (val !== emailAlerts) setEmailAlerts(val)
+          break
         }
-        case "systemNotifications": {
-          const val =
-            e.newValue !== null
-              ? JSON.parse(e.newValue)
-              : DEFAULTS.systemNotifications;
-          if (val !== systemNotifications) setSystemNotifications(val);
-          break;
-        }
-        case "autoDeactivateUsers": {
+        case 'systemNotifications': {
           const val =
             e.newValue !== null
               ? JSON.parse(e.newValue)
-              : DEFAULTS.autoDeactivateUsers;
-          if (val !== autoDeactivateUsers) setAutoDeactivateUsers(val);
-          break;
+              : DEFAULTS.systemNotifications
+          if (val !== systemNotifications) setSystemNotifications(val)
+          break
         }
-        case "maxLoginAttempts": {
-          const val = parseInt(e.newValue) || DEFAULTS.maxLoginAttempts;
-          if (val !== maxLoginAttempts) setMaxLoginAttempts(val);
-          break;
-        }
-        case "darkMode": {
-          const val =
-            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.darkMode;
-          if (val !== darkMode) setDarkMode(val);
-          break;
-        }
-        case "apiAccessEnabled": {
+        case 'autoDeactivateUsers': {
           const val =
             e.newValue !== null
               ? JSON.parse(e.newValue)
-              : DEFAULTS.apiAccessEnabled;
-          if (val !== apiAccessEnabled) setApiAccessEnabled(val);
-          break;
+              : DEFAULTS.autoDeactivateUsers
+          if (val !== autoDeactivateUsers) setAutoDeactivateUsers(val)
+          break
+        }
+        case 'maxLoginAttempts': {
+          const val = parseInt(e.newValue) || DEFAULTS.maxLoginAttempts
+          if (val !== maxLoginAttempts) setMaxLoginAttempts(val)
+          break
+        }
+        case 'darkMode': {
+          const val =
+            e.newValue !== null ? JSON.parse(e.newValue) : DEFAULTS.darkMode
+          if (val !== darkMode) setDarkMode(val)
+          break
+        }
+        case 'apiAccessEnabled': {
+          const val =
+            e.newValue !== null
+              ? JSON.parse(e.newValue)
+              : DEFAULTS.apiAccessEnabled
+          if (val !== apiAccessEnabled) setApiAccessEnabled(val)
+          break
         }
         default:
-          break;
+          break
       }
     }
-    window.addEventListener("storage", onStorageChange);
-    return () => window.removeEventListener("storage", onStorageChange);
+    window.addEventListener('storage', onStorageChange)
+    return () => window.removeEventListener('storage', onStorageChange)
   }, [
     systemName,
     storageLimit,
@@ -215,37 +215,37 @@ const Settings = () => {
     maxLoginAttempts,
     darkMode,
     apiAccessEnabled,
-  ]);
+  ])
 
   // Reset all settings to defaults
   const resetSettings = () => {
-    setSystemName(DEFAULTS.systemName);
-    setStorageLimit(DEFAULTS.storageLimit);
-    setFileRetention(DEFAULTS.fileRetention);
-    setRequire2FA(DEFAULTS.require2FA);
-    setPasswordComplexity(DEFAULTS.passwordComplexity);
-    setSessionTimeout(DEFAULTS.sessionTimeout);
-    setEmailAlerts(DEFAULTS.emailAlerts);
-    setSystemNotifications(DEFAULTS.systemNotifications);
-    setAutoDeactivateUsers(DEFAULTS.autoDeactivateUsers);
-    setMaxLoginAttempts(DEFAULTS.maxLoginAttempts);
-    setDarkMode(DEFAULTS.darkMode);
-    setApiAccessEnabled(DEFAULTS.apiAccessEnabled);
-  };
+    setSystemName(DEFAULTS.systemName)
+    setStorageLimit(DEFAULTS.storageLimit)
+    setFileRetention(DEFAULTS.fileRetention)
+    setRequire2FA(DEFAULTS.require2FA)
+    setPasswordComplexity(DEFAULTS.passwordComplexity)
+    setSessionTimeout(DEFAULTS.sessionTimeout)
+    setEmailAlerts(DEFAULTS.emailAlerts)
+    setSystemNotifications(DEFAULTS.systemNotifications)
+    setAutoDeactivateUsers(DEFAULTS.autoDeactivateUsers)
+    setMaxLoginAttempts(DEFAULTS.maxLoginAttempts)
+    setDarkMode(DEFAULTS.darkMode)
+    setApiAccessEnabled(DEFAULTS.apiAccessEnabled)
+  }
 
   // Handlers for buttons (simulate actions)
-  const handleBackupNow = () => alert("Backup started (simulated).");
-  const handleRestore = () => alert("Restore started (simulated).");
-  const handleClearCaches = () => alert("Caches cleared (simulated).");
-  const handleRebuildIndex = () => alert("Search index rebuilt (simulated).");
-  const handleRestartSystem = () => alert("System restarting (simulated).");
+  const handleBackupNow = () => alert('Backup started (simulated).')
+  const handleRestore = () => alert('Restore started (simulated).')
+  const handleClearCaches = () => alert('Caches cleared (simulated).')
+  const handleRebuildIndex = () => alert('Search index rebuilt (simulated).')
+  const handleRestartSystem = () => alert('System restarting (simulated).')
   const handlePurgeData = () => {
     if (
-      window.confirm("Are you sure? This will permanently delete user data!")
+      window.confirm('Are you sure? This will permanently delete user data!')
     ) {
-      alert("Data purged (simulated).");
+      alert('Data purged (simulated).')
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -417,7 +417,7 @@ const Settings = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings

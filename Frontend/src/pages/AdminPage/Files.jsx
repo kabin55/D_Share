@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   LineChart,
   Line,
@@ -10,7 +10,7 @@ import {
   Legend,
   BarChart,
   Bar,
-} from "recharts";
+} from 'recharts'
 
 import { FILE_TYPE_ICONS } from "../../Data/Constants";
 
@@ -96,9 +96,9 @@ const Files = () => {
           }));
         setActivityList(recentActivity);
       } catch (err) {
-        console.error("Error fetching files:", err);
+        console.error('Error fetching files:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     };
 
@@ -127,7 +127,9 @@ const Files = () => {
     <div className="space-y-6">
       {/* FILE MANAGEMENT TABLE */}
       <div className="bg-gray-800 p-6 rounded-xl shadow border border-gray-700">
-        <h2 className="text-xl font-semibold mb-4 text-white">File Management</h2>
+        <h2 className="text-xl font-semibold mb-4 text-white">
+          File Management
+        </h2>
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <input
@@ -223,7 +225,9 @@ const Files = () => {
 
       {/* STORAGE ANALYTICS WITH CHARTS */}
       <div className="bg-gray-800 p-6 rounded-xl shadow border border-gray-700">
-        <h2 className="text-xl font-semibold mb-4 text-white">Storage Analytics</h2>
+        <h2 className="text-xl font-semibold mb-4 text-white">
+          Storage Analytics
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Line Chart */}
           <div className="border border-gray-700 rounded-lg p-4 hover:border-blue-500">
@@ -235,9 +239,24 @@ const Files = () => {
                 <YAxis stroke="#cbd5e1" />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="documents" stroke="#3b82f6" strokeWidth={2} />
-                <Line type="monotone" dataKey="images" stroke="#10b981" strokeWidth={2} />
-                <Line type="monotone" dataKey="docs" stroke="#f59e0b" strokeWidth={2} />
+                <Line
+                  type="monotone"
+                  dataKey="documents"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="images"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="docs"
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -245,7 +264,7 @@ const Files = () => {
           {/* Bar Chart - Recent Activity */}
           <div className="border border-gray-700 rounded-lg p-4 hover:border-blue-500">
             <h3 className="font-medium mb-2 text-white">Recent Activity</h3>
-            <div style={{ width: "100%", height: 150 }}>
+            <div style={{ width: '100%', height: 150 }}>
               <ResponsiveContainer>
                 <BarChart
                   data={activityChartData}
@@ -272,7 +291,7 @@ const Files = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Files;
+export default Files

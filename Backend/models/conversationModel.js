@@ -15,10 +15,12 @@ const conversationSchema = new mongoose.Schema(
         default: [],
       },
     ],
+    lastMessage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Message',
+    },
   },
   { timestamps: true }
 )
 
-const Conversation = mongoose.model('Conversation', conversationSchema)
-
-export default Conversation
+export const Conversation = mongoose.model('Conversation', conversationSchema)
