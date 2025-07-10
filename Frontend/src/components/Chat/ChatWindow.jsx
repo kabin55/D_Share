@@ -8,14 +8,16 @@ const ChatWindow = ({ selectedUser }) => {
   const messagesEndRef = useRef(null)
   const currentUser = JSON.parse(localStorage.getItem('authUser'))
 
-  // Fetch messages based on receiverId (case1 logic)
+  // Fetch messages
   useEffect(() => {
     const fetchMessages = async () => {
       if (!selectedUser || !currentUser) return
 
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/messages/${selectedUser._id}`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/messages/${
+            selectedUser._id
+          }`,
           {
             headers: {
               Authorization: `Bearer ${currentUser.token}`,
@@ -31,10 +33,10 @@ const ChatWindow = ({ selectedUser }) => {
     }
 
     fetchMessages()
-    setMessages([]) // Clear messages when user changes
+    setMessages([]) // Clear old messages
   }, [selectedUser])
 
-  // Auto-scroll to bottom when new messages come in
+  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -42,9 +44,12 @@ const ChatWindow = ({ selectedUser }) => {
   const handleSend = async () => {
     if (!input.trim()) return
     setSending(true)
+
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/messages/send/${selectedUser._id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/messages/send/${
+          selectedUser._id
+        }`,
         {
           method: 'POST',
           headers: {
@@ -54,10 +59,10 @@ const ChatWindow = ({ selectedUser }) => {
           body: JSON.stringify({ text: input }),
         }
       )
+
       if (!res.ok) {
         const error = await res.json()
-        console.error(error)
-        throw new Error('Failed to send message')
+        throw new Error(error.message || 'Failed to send message')
       }
 
       const savedMessage = await res.json()
@@ -96,40 +101,62 @@ const ChatWindow = ({ selectedUser }) => {
       </div>
 
       {/* Message Area */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-2 bg-gray-50">
-        {messages.map((msg, index) => {
+      <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
+        {messages.slice(-6).map((msg, index) => {
           const senderId =
             typeof msg.sender === 'string' ? msg.sender : msg.sender?._id
           const isCurrentUser = senderId === currentUser._id
+          const senderPic = isCurrentUser
+            ? currentUser?.profilePic
+            : selectedUser?.profilePic
+          const time = new Date(msg.createdAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
 
           return (
             <div
               key={msg._id ?? msg.id ?? index}
-              className={`max-w-xs px-4 py-2 rounded-lg ${
-                isCurrentUser
-                  ? 'bg-blue-500 text-white self-end ml-auto'
-                  : 'bg-gray-300 text-black self-start'
+              className={`flex flex-col ${
+                isCurrentUser ? 'items-end' : 'items-start'
               }`}
             >
-              {msg.text}
+              <div
+                className={`flex items-end gap-2 ${
+                  isCurrentUser ? 'flex-row-reverse' : ''
+                }`}
+              >
+                <img
+                  src={senderPic || `https://i.pravatar.cc/150?u=${senderId}`}
+                  alt="Sender"
+                  className="w-8 h-8 rounded-full border border-gray-300"
+                />
+                <div
+                  className={`max-w-xs px-4 py-2 rounded-lg text-sm ${
+                    isCurrentUser
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-300 text-black'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+              <span className="text-xs text-gray-500 mt-0.5">{time}</span>
             </div>
           )
         })}
-
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t bg-white flex gap-2">
+      <div className="p-4 border-t bg-white flex gap-2 ">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring"
           placeholder="Type a message"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSend()
-            }
+            if (e.key === 'Enter') handleSend()
           }}
           disabled={sending}
         />

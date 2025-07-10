@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
-import { User } from '../models/usersModel.js'
+import User from '../models/userModel.js'
 
-export const protectRoute = async (req, res, next) => {
+const protectRoute = async (req, res, next) => {
   try {
     // Read token from Authorization header, format: "Bearer <token>"
     const authHeader = req.headers.authorization
@@ -34,3 +34,4 @@ export const protectRoute = async (req, res, next) => {
       .json({ error: 'Unauthorized - Invalid or Expired Token' })
   }
 }
+export default protectRoute

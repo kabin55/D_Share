@@ -26,8 +26,8 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <FloatingBackground />
-        <ChatBubble />
+        {/* <FloatingBackground />
+        <ChatBubble /> */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginWithMetaMask />} />

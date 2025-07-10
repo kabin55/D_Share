@@ -76,7 +76,7 @@ export const checkUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ walletAddress })
-    generateTokenAndSetCookie(user._id, res)
+    const token = generateTokenAndSetCookie(user._id, res)
 
     if (user) {
       return res.status(200).json({
@@ -85,8 +85,9 @@ export const checkUser = async (req, res) => {
         gender: user.gender,
         walletAddress: user.walletAddress,
         profilePic: user.profilePic,
+        token,
       })
-      console.log('User found:', user)
+      console.log('User found:', token)
     } else {
       return res.status(404).json({ message: 'User not found' })
     }

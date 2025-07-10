@@ -6,41 +6,66 @@ const UserList = ({ onSelectUser, selectedUser }) => {
   const currentUser = JSON.parse(localStorage.getItem('authUser'))
   const currentUserId = currentUser?._id
   const profilePic = currentUser?.profilePic
-  // console.log(currentUserId)
+
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersAndSort = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/users?exclude=${currentUserId}`,
+        // Fetch users
+        const userRes = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/users?exclude=${currentUserId}`,
           {
             headers: {
               Authorization: `Bearer ${currentUser?.token}`,
             },
           }
         )
-        const data = await res.json()
-        setUsers(data)
+        const userList = await userRes.json()
+
+        // Fetch last messages
+        const msgRes = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/messages/last-messages?userId=${currentUserId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentUser?.token}`,
+            },
+          }
+        )
+        const lastMessages = await msgRes.json()
+
+        // Map userId to last message time
+        const messageMap = {}
+        lastMessages.forEach((entry) => {
+          messageMap[entry.userId] = new Date(entry.lastMessage?.createdAt || 0)
+        })
+
+        // Sort users by latest message timestamp
+        userList.sort((a, b) => {
+          const aTime = messageMap[a._id] || 0
+          const bTime = messageMap[b._id] || 0
+          return bTime - aTime
+        })
+
+        setUsers(userList)
       } catch (err) {
-        console.error('Failed to fetch users:', err)
+        console.error('Failed to fetch users or messages:', err)
       }
     }
 
-    fetchUsers()
+    fetchUsersAndSort()
   }, [])
 
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">
         <div className="p-4 border-b border-gray-200 bg-blue-100 flex items-center gap-3">
-          {profilePic || (selectedUser && selectedUser._id) ? (
+          {profilePic ? (
             <img
-              src={
-                profilePic ||
-                (selectedUser
-                  ? `https://i.pravatar.cc/150?u=${selectedUser._id}`
-                  : null)
-              }
-              alt={selectedUser?.username || 'User'}
+              src={profilePic}
+              alt={currentUser?.username}
               className="w-10 h-10 rounded-full object-cover border border-blue-300"
             />
           ) : null}
