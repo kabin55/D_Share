@@ -70,5 +70,3 @@ server/node_modules/
 dump/
 
 # Optional: log files
-*.log
-debug.log
