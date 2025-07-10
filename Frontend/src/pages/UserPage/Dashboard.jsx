@@ -43,13 +43,17 @@ export default function Dashboard() {
           localStorage.setItem(
             'authUser',
             JSON.stringify({
-              _id: data._id,
+              _id: data.id,
               username: data.username,
               gender: data.gender,
               walletAddress: data.walletAddress,
               profilePic: data.profilePic,
+              token: data.token,
             })
           )
+          console.log('Stored user in localStorage:', {
+            _id: data.id,
+          })
           // Optionally, also store profilePic separately
           localStorage.setItem('profilePic', data.profilePic)
           setShowForm(false)
