@@ -306,7 +306,7 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Security */}
+          {/* Security
           <div>
             <h3 className="font-medium mb-3 border-b border-gray-700 pb-2 text-white">
               Security
@@ -354,88 +354,7 @@ const Settings = () => {
                 </select>
               </div>
             </div>
-          </div>
-
-          {/* Notifications */}
-          <div>
-            <h3 className="font-medium mb-3 border-b border-gray-700 pb-2 text-white">
-              Notifications
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded">
-                <label className="text-sm text-gray-400">Email Alerts</label>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={emailAlerts}
-                    onChange={() => setEmailAlerts(!emailAlerts)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded">
-                <label className="text-sm text-gray-400">
-                  System Notifications
-                </label>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={systemNotifications}
-                    onChange={() =>
-                      setSystemNotifications(!systemNotifications)
-                    }
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* User Management */}
-          <div>
-            <h3 className="font-medium mb-3 border-b border-gray-700 pb-2 text-white">
-              User Management
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded">
-                <label className="text-sm text-gray-400">
-                  Auto Deactivate Users
-                </label>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={autoDeactivateUsers}
-                    onChange={() =>
-                      setAutoDeactivateUsers(!autoDeactivateUsers)
-                    }
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-
-              <div className="flex justify-between items-center hover:bg-gray-700 p-2 rounded">
-                <label className="text-sm text-gray-400">
-                  Max Login Attempts
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={maxLoginAttempts}
-                  onChange={(e) =>
-                    setMaxLoginAttempts(
-                      Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
-                    )
-                  }
-                  className="border border-gray-600 rounded px-3 py-1 text-sm bg-gray-700 text-white hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 w-20 text-center"
-                />
-              </div>
-            </div>
-          </div>
+          </div> */}
 
           {/* Appearance */}
           <div>
@@ -455,35 +374,6 @@ const Settings = () => {
                   <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
-            </div>
-          </div>
-
-          {/* API Access */}
-          <div>
-            <h3 className="font-medium mb-3 border-b border-gray-700 pb-2 text-white">
-              API Access
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded">
-                <label className="text-sm text-gray-400">
-                  Enable API Access
-                </label>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={apiAccessEnabled}
-                    onChange={() => setApiAccessEnabled(!apiAccessEnabled)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              <button
-                className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded text-white text-sm mt-1"
-                onClick={() => alert('API key regenerated (simulated)')}
-              >
-                Regenerate API Key
-              </button>
             </div>
           </div>
         </div>
@@ -522,66 +412,6 @@ const Settings = () => {
               title="Reset all settings to defaults"
             >
               Reset to Defaults
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Backup & Restore */}
-      <div className="bg-gray-800 p-6 rounded-xl shadow border border-gray-700">
-        <h2 className="text-xl font-semibold mb-4 text-white">
-          Backup & Restore
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="border border-gray-700 rounded-lg p-4 flex flex-col items-center text-center hover:border-blue-500 hover:shadow-sm">
-            <div className="bg-blue-500 bg-opacity-20 p-3 rounded-full mb-3">
-              <span className="text-blue-400 text-xl">⏱️</span>
-            </div>
-            <h3 className="font-medium mb-1 text-white hover:text-blue-400">
-              Auto Backup
-            </h3>
-            <p className="text-sm text-gray-400 mb-3 hover:text-gray-300">
-              Configure automatic backups
-            </p>
-            <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
-              Configure
-            </button>
-          </div>
-
-          <div className="border border-gray-700 rounded-lg p-4 flex flex-col items-center text-center hover:border-blue-500 hover:shadow-sm">
-            <div className="bg-green-500 bg-opacity-20 p-3 rounded-full mb-3">
-              <span className="text-green-400 text-xl">💾</span>
-            </div>
-            <h3 className="font-medium mb-1 text-white hover:text-green-400">
-              Manual Backup
-            </h3>
-            <p className="text-sm text-gray-400 mb-3 hover:text-gray-300">
-              Create backup now
-            </p>
-            <button
-              onClick={handleBackupNow}
-              className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-            >
-              Backup Now
-            </button>
-          </div>
-
-          <div className="border border-gray-700 rounded-lg p-4 flex flex-col items-center text-center hover:border-blue-500 hover:shadow-sm">
-            <div className="bg-purple-500 bg-opacity-20 p-3 rounded-full mb-3">
-              <span className="text-purple-400 text-xl">🔄</span>
-            </div>
-            <h3 className="font-medium mb-1 text-white hover:text-purple-400">
-              Restore
-            </h3>
-            <p className="text-sm text-gray-400 mb-3 hover:text-gray-300">
-              Restore from backup
-            </p>
-            <button
-              onClick={handleRestore}
-              className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
-            >
-              Restore
             </button>
           </div>
         </div>

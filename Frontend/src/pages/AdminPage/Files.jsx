@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 import {
-  PieChart,
-  Pie,
-  Cell,
   LineChart,
   Line,
   XAxis,
@@ -15,79 +12,116 @@ import {
   Bar,
 } from 'recharts'
 
-import { FILE_TYPE_ICONS } from '../../Data/Constants'
-import { userActivity } from '../../Data/SampleData'
+import { FILE_TYPE_ICONS } from "../../Data/Constants";
 
 const Files = () => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [fileList, setFileList] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedType, setSelectedType] = useState("All Types");
+  const [chartData, setChartData] = useState([]);
+  const [activityChartData, setActivityChartData] = useState([]);
+  const [activityList, setActivityList] = useState([]);
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/allfiles`
-        )
-        const data = await res.json()
-        console.log('Fetched files:', data)
-        ;<div className="text-sm text-gray-400">
-          const date ={' '}
-          {data.date
-            ? new Date(data.date).toLocaleDateString('en-US', {
-                weekday: 'long',
-              })
-            : 'N/A'}
-          console.log(date)
-        </div>
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/allfiles`);
+        const data = await res.json();
+        console.log("Fetched files:", data);
+        setFileList(data);
 
-        setFileList(data)
+        // Prepare file type per day data
+        const dayWiseFileStats = {
+          Mon: { documents: 0, images: 0, docs: 0 },
+          Tue: { documents: 0, images: 0, docs: 0 },
+          Wed: { documents: 0, images: 0, docs: 0 },
+          Thu: { documents: 0, images: 0, docs: 0 },
+          Fri: { documents: 0, images: 0, docs: 0 },
+          Sat: { documents: 0, images: 0, docs: 0 },
+          Sun: { documents: 0, images: 0, docs: 0 },
+        };
+
+        const uploadCounts = {};
+
+        data.forEach((file) => {
+          const day = new Date(file.createdAt).toLocaleDateString("en-US", {
+            weekday: "short",
+          });
+
+          if (!dayWiseFileStats[day]) {
+            dayWiseFileStats[day] = { documents: 0, images: 0, docs: 0 };
+          }
+
+          const type = file.type?.toLowerCase() || "";
+
+          if (type.includes("pdf")) {
+            dayWiseFileStats[day].documents += 1;
+          } else if (type.includes("image")) {
+            dayWiseFileStats[day].images += 1;
+          } else {
+            dayWiseFileStats[day].docs += 1;
+          }
+
+          const username = file.username || "Unknown";
+          uploadCounts[username] = (uploadCounts[username] || 0) + 1;
+        });
+
+        // Line chart
+        const generatedChartData = Object.entries(dayWiseFileStats).map(
+          ([day, counts]) => ({
+            day,
+            ...counts,
+          })
+        );
+        setChartData(generatedChartData);
+
+        // Bar chart
+        const uploadChartData = Object.entries(uploadCounts).map(
+          ([user, count]) => ({
+            user,
+            count,
+          })
+        );
+        setActivityChartData(uploadChartData);
+
+        // Recent activity list (5 most recent)
+        const recentActivity = [...data]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 5)
+          .map((file, index) => ({
+            id: index,
+            user: file.username || "Unknown",
+            file: file.filename || "Unnamed file",
+          }));
+        setActivityList(recentActivity);
       } catch (err) {
         console.error('Error fetching files:', err)
       } finally {
         setLoading(false)
       }
-    }
-    fetchFiles()
-  }, [])
+    };
 
-  const filteredFiles = fileList.filter(
-    (data) =>
-      data.filename?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      data.username?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+    fetchFiles();
+  }, []);
 
-  const getFileTypeIcon = (type) =>
-    FILE_TYPE_ICONS[type] || FILE_TYPE_ICONS.default
+ const filteredFiles = fileList.filter((data) => {
+  const matchesSearch =
+    data.filename?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    data.username?.toLowerCase().includes(searchQuery.toLowerCase());
 
-  const storageData = [
-    { name: 'Documents', value: 400 },
-    { name: 'Images', value: 300 },
-    { name: 'Videos', value: 200 },
-    { name: 'Others', value: 100 },
-  ]
+  const type = data.type?.toLowerCase() || "";
 
-  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+  const matchesType =
+    selectedType === "All Types" ||
+    (selectedType === "Documents" && type.includes("pdf")) ||
+    (selectedType === "Images" && type.includes("image")) ||
+    (selectedType === "Videos" && type.includes("video"));
 
-  const fileTypesData = [
-    { day: 'Mon', documents: 4, images: 2, docs: 1 },
-    { day: 'Tue', documents: 3, images: 5, docs: 2 },
-    { day: 'Wed', documents: 6, images: 3, docs: 3 },
-    { day: 'Thu', documents: 4, images: 4, docs: 2 },
-    { day: 'Fri', documents: 5, images: 6, docs: 3 },
-  ]
+  return matchesSearch && matchesType;
+});
 
-  const activityCountsByUser = userActivity.reduce((acc, act) => {
-    acc[act.user] = (acc[act.user] || 0) + 1
-    return acc
-  }, {})
-
-  const activityChartData = Object.entries(activityCountsByUser).map(
-    ([user, count]) => ({
-      user,
-      count,
-    })
-  )
+  const getFileTypeIcon = (type) => FILE_TYPE_ICONS[type] || FILE_TYPE_ICONS.default;
 
   return (
     <div className="space-y-6">
@@ -119,12 +153,17 @@ const Files = () => {
               />
             </svg>
           </div>
-          <select className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 hover:border-blue-500 text-white">
-            <option>All Types</option>
-            <option>Documents</option>
-            <option>Images</option>
-            <option>Videos</option>
-          </select>
+        <select
+  className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 hover:border-blue-500 text-white"
+  value={selectedType}
+  onChange={(e) => setSelectedType(e.target.value)}
+>
+  <option>All Types</option>
+  <option>Documents</option>
+  <option>Images</option>
+  <option>Videos</option>
+</select>
+
         </div>
 
         <div className="overflow-x-auto">
@@ -147,9 +186,7 @@ const Files = () => {
                 <tr key={data._id || data.id} className="hover:bg-gray-700">
                   <td className="px-6 py-4">
                     <div className="flex items-center">
-                      <span className="mr-3 text-lg">
-                        {getFileTypeIcon(data.type)}
-                      </span>
+                      <span className="mr-3 text-lg">{getFileTypeIcon(data.type)}</span>
                       <div>
                         <div className="font-medium text-white hover:text-blue-400">
                           {data.filename}
@@ -163,33 +200,21 @@ const Files = () => {
                   <td className="px-6 py-4">
                     <div className="flex space-x-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-300">
-                          Downloads
-                        </div>
-                        <div className="text-blue-400">
-                          {data.downloads || 0}
-                        </div>
+                        <div className="text-sm font-medium text-gray-300">Downloads</div>
+                        <div className="text-blue-400">{data.downloads || 0}</div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-300">
-                          Views
-                        </div>
+                        <div className="text-sm font-medium text-gray-300">Views</div>
                         <div className="text-green-400">{data.views || 0}</div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-300">
-                          Last Access
-                        </div>
-                        <div className="text-gray-400">
-                          {data.lastAccessed || 'N/A'}
-                        </div>
+                        <div className="text-sm font-medium text-gray-300">Last Access</div>
+                        <div className="text-gray-400">{data.lastAccessed || "N/A"}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <button className="text-gray-400 hover:text-gray-300">
-                      View
-                    </button>
+                    <button className="text-gray-400 hover:text-gray-300">View</button>
                   </td>
                 </tr>
               ))}
@@ -204,39 +229,11 @@ const Files = () => {
           Storage Analytics
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Pie Chart */}
-          <div className="border border-gray-700 rounded-lg p-4 hover:border-blue-500">
-            <h3 className="font-medium mb-2 text-white">
-              Storage Distribution
-            </h3>
-            <ResponsiveContainer width="100%" height={160}>
-              <PieChart>
-                <Pie
-                  data={storageData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={60}
-                  label
-                  isAnimationActive={true}
-                >
-                  {storageData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
           {/* Line Chart */}
           <div className="border border-gray-700 rounded-lg p-4 hover:border-blue-500">
             <h3 className="font-medium mb-2 text-white">File Types</h3>
             <ResponsiveContainer width="100%" height={160}>
-              <LineChart data={fileTypesData}>
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" stroke="#cbd5e1" />
                 <YAxis stroke="#cbd5e1" />
@@ -283,12 +280,10 @@ const Files = () => {
             </div>
 
             <ul className="space-y-2 mt-4">
-              {userActivity.slice(0, 3).map((activity) => (
-                <li
-                  key={activity.id}
-                  className="text-sm text-gray-400 hover:text-blue-400"
-                >
-                  {activity.user} {activity.action} {activity.file}
+              {activityList.map((activity) => (
+                <li key={activity.id} className="text-sm text-gray-400 hover:text-blue-400">
+                  <span className="text-white">{activity.user}</span> uploaded{" "}
+                  <span className="text-blue-400">{activity.file}</span>
                 </li>
               ))}
             </ul>
