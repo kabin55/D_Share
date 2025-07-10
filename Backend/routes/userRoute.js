@@ -11,9 +11,10 @@ import { logout } from '../controllers/userController.js'
 const router = express.Router()
 
 router.post('/data', userData)
+router.get('/', getAllUsers)
 router.get('/', protectRoute, getUsersForSidebar)
 router.post('/check', checkUser)
 router.post('/logout', logout)
-router.get('/', getAllUsers)
+
 
 export default router
