@@ -5,6 +5,7 @@ import {
   userData,
   checkUser,
   getAllUsers,
+  updateBlockedStatus,
 } from '../controllers/userController.js'
 import { logout } from '../controllers/userController.js'
 
@@ -15,6 +16,6 @@ router.get('/', getAllUsers)
 router.get('/', protectRoute, getUsersForSidebar)
 router.post('/check', checkUser)
 router.post('/logout', logout)
-
+router.patch('/:id/block', updateBlockedStatus)
 
 export default router

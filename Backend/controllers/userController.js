@@ -86,6 +86,7 @@ export const checkUser = async (req, res) => {
         walletAddress: user.walletAddress,
         profilePic: user.profilePic,
         token,
+        blockStatus: user.block,
       })
       console.log('User found:', token)
     } else {
@@ -108,5 +109,18 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     console.error('Error fetching users:', error)
     res.status(500).json({ message: 'Server error', error: error.message })
+  }
+}
+
+// PATCH /api/users/:id/block
+export const updateBlockedStatus = async (req, res) => {
+  const { id } = req.params
+  const { block } = req.body
+
+  try {
+    const user = await User.findByIdAndUpdate(id, { block }, { new: true })
+    res.json(user)
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update block status' })
   }
 }

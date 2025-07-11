@@ -37,6 +37,7 @@ const processSignupData = (data) => {
 }
 
 const Users = () => {
+  const [userList, setUserList] = useState([])
   const [activityData, setActivityData] = useState([])
   const [signupData, setSignupData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -48,6 +49,7 @@ const Users = () => {
         const data = await userActivity()
         setActivityData(data)
         setSignupData(processSignupData(data))
+        setUserList(data) // sync userList
       } catch (err) {
         setError('Failed to load user activity.')
       } finally {
@@ -57,6 +59,32 @@ const Users = () => {
 
     loadData()
   }, [])
+
+  const handleToggleBlock = async (userId) => {
+    try {
+      const userToUpdate = userList.find((u) => u._id === userId)
+      if (!userToUpdate) return
+
+      const updatedStatus = !userToUpdate.block
+
+      await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/${userId}/block`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ block: updatedStatus }),
+        }
+      )
+
+      setUserList((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === userId ? { ...u, block: updatedStatus } : u
+        )
+      )
+    } catch (error) {
+      console.error('Failed to toggle block status:', error)
+    }
+  }
 
   const handleEdit = (userId) => alert(`Edit user with ID: ${userId}`)
   const handleViewActivity = (userId) =>
@@ -91,7 +119,7 @@ const Users = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-800 divide-y divide-gray-700">
-              {activityData.map((user) => (
+              {userList.map((user) => (
                 <tr key={user._id} className="hover:bg-gray-700">
                   <td className="px-6 py-4 flex items-center space-x-4">
                     <img
@@ -107,9 +135,9 @@ const Users = () => {
                   <td className="px-6 py-4 text-gray-400 capitalize">
                     {user.gender || 'Unknown'}
                   </td>
-                  <td className="px-6 py-4">
-                    <button
-                      className="text-blue-400 hover:text-blue-300 mr-3"
+                  <td className="px-6 py-4 flex space-x-3">
+                    {/* <button
+                      className="text-blue-400 hover:text-blue-300"
                       onClick={() => handleEdit(user._id)}
                     >
                       Edit
@@ -119,6 +147,16 @@ const Users = () => {
                       onClick={() => handleViewActivity(user._id)}
                     >
                       View Activity
+                    </button> */}
+                    <button
+                      className={`${
+                        user.block
+                          ? 'text-green-500 hover:text-green-400'
+                          : 'text-red-500 hover:text-red-400'
+                      }`}
+                      onClick={() => handleToggleBlock(user._id)}
+                    >
+                      {user.block ? 'Unblock' : 'Block'}
                     </button>
                   </td>
                 </tr>
