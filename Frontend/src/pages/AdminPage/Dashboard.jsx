@@ -1,19 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StatsCard from "../../components/AdminDashboard/StatsCard";
-import IPFSStatus from "../../components/AdminDashboard/IPFSStatus";
 import PopularityGraph from "../../components/AdminDashboard/Popularitygraph";
 import RecentActivity from "../../components/AdminDashboard/RecentActivity";
 import RecentFilesTable from "../../components/AdminDashboard/RecentFilesTable";
-import {
-  stats,
-  ipfsStats,
-  userActivity,
-  recentFiles,
-} from "../../Data/SampleData";
+
+import { userActivity, recentFiles } from "../../Data/SampleData";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [totalFiles, setTotalFiles] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalFiles = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/total-files`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch total files");
+        }
+        const data = await response.json();
+        setTotalFiles(data.totalFiles);
+      } catch (error) {
+        console.error("Error fetching total files:", error);
+      }
+    };
+
+    fetchTotalFiles();
+
+    const interval = setInterval(() => {
+      fetchTotalFiles();
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredFiles = recentFiles.filter(
     (file) =>
@@ -33,7 +54,6 @@ const Dashboard = () => {
         position: "relative",
       }}
     >
-      {/* Dark overlay */}
       <div
         style={{
           position: "absolute",
@@ -43,16 +63,11 @@ const Dashboard = () => {
         }}
       />
 
-      {/* Content container */}
       <div className="relative z-10 p-6 text-white">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {Object.entries(stats).map(([key, value]) => (
-            <StatsCard key={key} title={key} value={value} />
-          ))}
+          <StatsCard title="Total Files" value={totalFiles} />
         </div>
-
-        <IPFSStatus data={ipfsStats} />
 
         {/* Graph and Activity Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

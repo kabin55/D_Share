@@ -1,9 +1,47 @@
-import { ACTION_ICONS } from "../../Data/Constants";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ACTION_ICONS } from "../../Data/Constants"; // Adjust the import path accordingly
 
-const RecentActivity = ({ activities }) => {
+const RecentActivity = () => {
+  const [activities, setActivities] = useState([]);
+
+  // Helper to get the icon based on actionType
   const getActionIcon = (actionType) => {
     return ACTION_ICONS[actionType] || ACTION_ICONS.default;
   };
+
+  // Fetch recent activity from backend API
+  const fetchRecentActivity = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/activity/recent`
+      );
+
+      // Format backend data to match UI expectations
+      const formattedActivities = res.data.map((item) => ({
+        id: item._id,
+        user: item.username || "Unknown",
+        actionType: "upload", // assuming upload action; change if needed
+        action: "uploaded",
+        file: item.filename,
+        time: new Date(item.createdAt).toLocaleString(),
+      }));
+
+      setActivities(formattedActivities);
+    } catch (error) {
+      console.error("Failed to fetch recent activity", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentActivity();
+
+    const interval = setInterval(() => {
+      fetchRecentActivity();
+    }, 5000); // refresh every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const isValidArray = Array.isArray(activities);
 
