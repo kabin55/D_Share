@@ -1,0 +1,10 @@
+{
+  "host": "0.0.0.0",
+  "port": 5000,
+  "bootstrap_nodes": [],
+  "scan_ports": [5000], 
+  "scan_timeout": 5,
+  "storage_path": "./storage",
+  "chunk_size": 262144,
+  "discovery_interval": 10
+}

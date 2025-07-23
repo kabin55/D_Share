@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { downloadFileByHash } from "../../utils/getfile.js"
+
 
 export default function FileDetailPage() {
   const { id } = useParams();
@@ -25,8 +27,8 @@ export default function FileDetailPage() {
 
   if (!file) return <p className="text-white p-10">File not found</p>;
 
-  const ipfsLink = `https://ipfs.io/ipfs/${file.ipfsHash}`;
-
+  // const ipfsLink = `https://ipfs.io/ipfs/${file.ipfsHash}`;
+  
   return (
     <div className="flex bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white min-h-screen">
       <Sidebar />
@@ -39,23 +41,18 @@ export default function FileDetailPage() {
             <p><span className="text-gray-400">Access:</span> {file.privacy === "public" ? "Public 🔓" : "Private 🔒"}</p>
             <p><span className="text-gray-400">Description:</span> {file.description}</p>
             <p><span className="text-gray-400">File Type:</span> {file.type}</p>
+            <p><span className="text-gray-400">File Hash:</span> {file.fileHash}</p>
             <p><span className="text-gray-400">Size:</span> {(file.size / 1024).toFixed(2)} KB</p>
             <p><span className="text-gray-400">Uploaded:</span> {new Date(file.createdAt).toLocaleDateString()}</p>
           </div>
 
           <div className="mt-10 flex gap-4">
   <button
-    className="px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"
-    onClick={() => {
-      const a = document.createElement("a");
-      a.href = ipfsLink;
-      a.target = "_blank";
-      a.download = file.filename;
-      a.click();
-    }}
-  >
-    ⬇️ Download File
-  </button>
+              className="px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"
+              onClick={() => downloadFileByHash(file.fileHash)}  // <-- use smart contract download here
+            >
+              ⬇️ Download File
+            </button>
 
   <button
     className="px-8 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 transition text-white font-semibold shadow-lg hover:scale-105 transform duration-200"

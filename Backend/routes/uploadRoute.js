@@ -3,6 +3,9 @@ import multer from 'multer';
 import ipfs from '../utils/ipfs.js';
 import File from '../models/fileModel.js';
 import dotenv from 'dotenv';
+import { UploadService } from "../../smart-contract/index.js";
+
+
 
 import axios from 'axios';
 import FormData from 'form-data';
@@ -99,14 +102,53 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
     const localUrl = `http://127.0.0.1:8080/ipfs/${ipfsHash}`;
 
-    // Step 3: Save metadata in MongoDB
+
+    // Step 3: Upload metadata to smart contract
+
+  const uploadService = new UploadService();
+  await uploadService.init(
+  process.env.CONTRACT_ADDRESS,
+  process.env.PRIVATE_KEY,
+  process.env.SEPOLIA_RPC_URL
+);
+
+const accessMap = {
+  private: 0,
+  public: 1,
+  shared: 2
+};
+const access = accessMap[privacy.toLowerCase()];
+if (access === undefined) {
+  throw new Error("Invalid privacy option. Must be 'private', 'public', or 'shared'");
+}
+
+
+  const fileMetadata = await uploadService.uploadFile({
+  fileName: filename,
+  author: username,
+  fileType: mimetype,
+  fileSize: size,
+  cid: ipfsHash,
+  access: access, // Make sure this is 0, 1, or 2
+  sharedWithList: [],        // Add actual addresses if needed
+  uploader: walletAddress,
+});
+
+const fileHash = fileMetadata;
+
+
+
+
+
+    // Step 4: Save metadata in MongoDB
     const newFile = await File.create({
       filename,
       username,
       description,
       privacy,
       walletAddress,
-      ipfsHash,
+      ipfsHash,//CID
+      fileHash,  
       size,
       type: mimetype
     });
@@ -116,6 +158,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       file_status: detected === 0 ? 'CLEAN' : 'SUSPICIOUS',
       ipfsHash,
       ipfsUrl,
+       fileHash,  // FileHash in frontend
       summary: `Malicious: ${stats.malicious}, Suspicious: ${stats.suspicious}`,
       file: newFile
     });

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { FiSearch, FiCheck } from "react-icons/fi";
 import Sidebar from "../../components/Sidebar";
 import FloatingBackground from "../../components/FloatingBackground";
 import Navbar from "../../components/DashNav";
@@ -12,6 +13,13 @@ export default function UploadPage() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
   const inputRef = useRef(null);
+  
+  // New states for user selection
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
 
   function handleDrag(e) {
     e.preventDefault();
@@ -38,71 +46,134 @@ export default function UploadPage() {
     try {
       const walletAddress = localStorage.getItem("walletAddress");
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/files?walletAddress=${walletAddress}`);
-      console.log(res)
       const data = await res.json();
-      console.log(data)
       setUploadedFiles(data);
     } catch (err) {
       console.error("Error fetching uploaded files", err);
     }
   };
+  
+  //fetch user
+  const fetchUsers = async () => {
+  setIsLoadingUsers(true);
+  try {
+    const currentUser = JSON.parse(localStorage.getItem("authUser"));
+
+    // Ensure currentUser and _id are valid
+    let url = `${import.meta.env.VITE_API_BASE_URL}/api/users`;
+    if (currentUser?._id) {
+      url += `?exclude=${currentUser._id}`;
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${currentUser?.token}`,
+      },
+    });
+
+    const data = await response.json();
+    setUsers(data);
+    setFilteredUsers(data);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  } finally {
+    setIsLoadingUsers(false);
+  }
+};
+
 
   useEffect(() => {
     fetchUploadedFiles();
   }, []);
 
-async function handleUpload() {
-  if (!selectedFile || !filename || !description) {
-    alert("Please fill all fields and select a file.");
-    return;
-  }
-
-   const username =
-    JSON.parse(localStorage.getItem('authUser'))?.username || 'User'
-  const walletAddress = localStorage.getItem("walletAddress");
-
-  if (!username || !walletAddress) {
-    alert("Missing user credentials. Please log in again.");
-    return;
-  }
-
-  setIsScanning(true);
-
-  setTimeout(async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("filename", filename);
-      formData.append("description", description);
-      formData.append("privacy", privacy);
-      formData.append("username", username);
-      formData.append("walletAddress", walletAddress);
-
-     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
-  method: "POST",
-  body: formData,
-});
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert(`Uploaded to IPFS! Hash: ${data.ipfsHash}`);
-        setSelectedFile(null);
-        setFilename("");
-        setDescription("");
-        fetchUploadedFiles();
-      } else {
-        alert(`Upload failed: ${data.message || 'Unknown error'}`);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error uploading file");
-    } finally {
-      setIsScanning(false);
+  useEffect(() => {
+    if (privacy === "shared") {
+      fetchUsers();
+    } else {
+      setSelectedUsers([]);
     }
-  }, 5000);
-}
+  }, [privacy]);
 
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(user =>
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
+
+  const toggleUserSelection = (userId) => {
+    setSelectedUsers(prev =>
+      prev.includes(userId)
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  async function handleUpload() {
+    if (!selectedFile || !filename || !description) {
+      alert("Please fill all fields and select a file.");
+      return;
+    }
+
+    if (privacy === "shared" && selectedUsers.length === 0) {
+      alert("Please select at least one user to share with.");
+      return;
+    }
+
+    const username =
+      JSON.parse(localStorage.getItem('authUser'))?.username || 'User';
+    const walletAddress = localStorage.getItem("walletAddress");
+
+    if (!username || !walletAddress) {
+      alert("Missing user credentials. Please log in again.");
+      return;
+    }
+
+    setIsScanning(true);
+
+    setTimeout(async () => {
+      try {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("filename", filename);
+        formData.append("description", description);
+        formData.append("privacy", privacy);
+        formData.append("username", username);
+        formData.append("walletAddress", walletAddress);
+        
+        if (privacy === "shared") {
+          formData.append("sharedWith", JSON.stringify(selectedUsers));
+        }
+
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert(`Uploaded to IPFS! Hash: ${data.ipfsHash}`);
+          setSelectedFile(null);
+          setFilename("");
+          setDescription("");
+          setSelectedUsers([]);
+          fetchUploadedFiles();
+        } else {
+          alert(`Upload failed: ${data.message || 'Unknown error'}`);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error uploading file");
+      } finally {
+        setIsScanning(false);
+      }
+    }, 5000);
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white font-sans">
@@ -113,7 +184,6 @@ async function handleUpload() {
 
         <main className="flex-1 p-10">
           <div className="flex flex-col lg:flex-row gap-10">
-            {/* Upload Form */}
             <div className="flex-1 space-y-4 bg-[#1e1e1e]/80 p-6 rounded-3xl shadow-2xl backdrop-blur-md border border-[#2a2a2a]">
               <h1 className="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
                 Upload to D-Share
@@ -171,7 +241,61 @@ async function handleUpload() {
                 ))}
               </div>
 
-              {/* Drag & Drop */}
+              {privacy === "shared" && (
+                <div className="space-y-2">
+                  <div className="relative">
+                    <FiSearch className="absolute left-3 top-3 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search users..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-[#111] border border-[#333] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
+                      disabled={isLoadingUsers || isScanning}
+                    />
+                  </div>
+
+                  <div className="max-h-40 overflow-y-auto border border-[#333] rounded-lg bg-[#111]">
+                    {isLoadingUsers ? (
+                      <div className="p-4 text-center text-gray-400 text-sm">Loading users...</div>
+                    ) : filteredUsers.length === 0 ? (
+                      <div className="p-4 text-center text-gray-400 text-sm">
+                        {searchTerm ? "No matching users found" : "No users available"}
+                      </div>
+                    ) : (
+                      filteredUsers.map((user) => (
+                        <div
+                          key={user._id}
+                          className="flex items-center justify-between p-2 hover:bg-[#222] border-b border-[#333] last:border-b-0"
+                        >
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={user.profilePic || `https://i.pravatar.cc/150?u=${user._id}`}
+                              alt={user.username}
+                              className="w-6 h-6 rounded-full"
+                            />
+                            <span className="text-sm">{user.username}</span>
+                          </div>
+                          <button
+                            onClick={() => toggleUserSelection(user._id)}
+                            disabled={isScanning}
+                            className={`p-1 rounded-full ${selectedUsers.includes(user._id) ? 'bg-indigo-500 text-white' : 'bg-[#333]'}`}
+                          >
+                            <FiCheck size={12} />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {selectedUsers.length > 0 && (
+                    <div className="text-xs text-gray-400">
+                      Selected: {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
@@ -237,7 +361,7 @@ async function handleUpload() {
               </div>
             </div>
 
-           <div className="w-full lg:w-80 bg-[#1e1e1e]/80 p-6 rounded-2xl shadow-xl border border-[#2b2b2b] backdrop-blur-lg overflow-y-auto">
+            <div className="w-full lg:w-80 bg-[#1e1e1e]/80 p-6 rounded-2xl shadow-xl border border-[#2b2b2b] backdrop-blur-lg overflow-y-auto">
               <h2 className="text-xl font-bold mb-4 text-cyan-400">Uploaded Files</h2>
               {uploadedFiles.length === 0 ? (
                 <p className="text-gray-500 text-sm">No files uploaded yet.</p>
@@ -252,9 +376,6 @@ async function handleUpload() {
                   ))}
                 </ul>
               )}
-            
-            
-            
             </div>
           </div>
         </main>

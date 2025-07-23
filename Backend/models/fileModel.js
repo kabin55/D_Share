@@ -16,25 +16,29 @@ walletAddress: {
   required: true
 },
 
-    ipfsHash: {
-      type: String,
-      required: true
-    },
-    size: {
-      type: Number,
-      required: true
-    },
-    type: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String
-    },
-    privacy: {
-      type: String,
-      enum: ['public', 'private'],
-      default: 'private'
+ipfsHash: {
+  type: String,
+  required: true
+},
+fileHash: { 
+  type: String,
+  required: true
+},
+size: {
+  type: Number,
+  required: true
+},
+type: {
+  type: String,
+  required: true
+},
+description: {
+  type: String
+},
+privacy: {
+  type: String,
+  enum: ['public', 'private','shared'],
+  default: 'private'
     }
   },
   { timestamps: true }
