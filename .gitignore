@@ -5,7 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# dotenv
+# ignore dotenv
 .env
 .env.local
 .env.development.local

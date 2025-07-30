@@ -41,9 +41,7 @@ const Header = () => {
       <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
         {getPageTitle()}
       </h1>
-      <div className="relative w-full md:w-64">
-
-      </div>
+      <div className="relative w-full md:w-64"></div>
 
       {/* Show filtered results (for demo purposes) */}
       {searchQuery && (

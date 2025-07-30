@@ -21,7 +21,7 @@ const RecentActivity = () => {
       const formattedActivities = res.data.map((item) => ({
         id: item._id,
         user: item.username || "Unknown",
-        actionType: "upload", // assuming upload action; change if needed
+        actionType: "upload",
         action: "uploaded",
         file: item.filename,
         time: new Date(item.createdAt).toLocaleString(),
